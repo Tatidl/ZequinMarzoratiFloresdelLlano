@@ -2,13 +2,23 @@ package tuti.desi.entidades;
 
 import java.util.List;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+@Entity
 public class Provincia {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	
 	private String nombre;
 	
+	@OneToMany(mappedBy = "provincia")
 	private List<Ciudad> ciudades;
 	
 	

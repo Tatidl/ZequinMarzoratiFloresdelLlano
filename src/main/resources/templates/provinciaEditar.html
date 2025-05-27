@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title><span th:text="#{provincia.editar.titulo}"/></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+
+<body>
+	<div class="starter-template">
+        <h1><span  th:text="#{empresa}" /></h1>
+        <h2 th:text="${formBean.id} ? #{provincia.editar.titulo}: #{provincia.registrar.titulo}" />
+    </div>
+
+    <form  th:action="@{/provinciaEditar}" th:object="${formBean}" method="post">
+		<p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" />
+		<input type="hidden" id="id" th:field="*{id}">
+		<table border="0" style="align-self: center;">
+	        <tr>
+	            <td><label th:text="#{provincia.nombre}" /></td>
+	            <td><input type="text" th:field="*{nombre}" /></td> 
+	            <td> <p th:if="${#fields.hasErrors('nombre')}" th:errorclass="error" th:errors="*{nombre}" /> </td> 
+	        </tr>
+	  	</table>
+	  	<table class="botones">
+	      <tr>
+		      <td><button type="submit" name="action" value="actionAceptar" th:text="#{botones.aceptar}"/></td>
+		      <td><button type="submit" name="action" value="actionCancelar" th:text="#{botones.cancelar}" /></td>
+	      </tr>
+	    </table>
+	</form>
+</body>
+</html>	

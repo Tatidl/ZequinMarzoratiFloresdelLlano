@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <body>
-	
-    
-	
+<head>
+    <meta charset="UTF-8">
+    <title>Menú Principal</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
    <div class="starter-template">
         <h1>Ejemplo Spring Boot Web Thymeleaf </h1>
         <h2>
@@ -12,6 +14,10 @@
     </div>
     
 
-        
-  </body>
+    <div class="menu">
+        <a th:href="@{/provinciasBuscar}">Provincias</a>
+        <a th:href="@{/ciudadesBuscar}">Ciudades</a>
+    </div>
+
+</body>
 </html>
