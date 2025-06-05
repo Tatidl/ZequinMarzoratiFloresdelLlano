@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <title>Ejemplo Spring Boot Web Thymeleaf</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+
+	<div class="starter-template">
+        <h1>TSTI</h1>
+        <h2>Buscar Productos</h2>
+    </div>
+    
+	<form  th:action="@{/productosBuscar}" th:object="${formBean}" method="post">
+	
+ 		<p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" /> <!--esto es para poder mostrar el error cuando ocurre una excepcion -->
+		
+		<table border="1" style="align-self: center;">
+	        <tr>
+	            <td><label th:text="Nombre"/></td>
+	            <td><input type="text" th:field="*{nombre}" /></td>
+	        </tr>        
+	  </table>
+	  <table class="botones">
+	      <tr>
+		      <td><input type="submit" name="action" value="Buscar" /></td>
+		      <td><input type="submit" name="action" value="Cancelar" /></td>
+		      <td><input type="submit" name="action" value="Registrar" /></td>
+	      </tr>
+	    </table>
+	    
+	   <table  class="resultados" border="0" style="align-self: center;">
+		    <thead>
+		      <tr>
+		        <th ><label>Nombre</label></th>
+		        <th ><label>Fecha Venc.</label></th>
+		        <th ></th>
+		        <th ></th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr th:each="p : ${resultados}">
+				    <td th:text="${{p.nombre}}"></td>
+			        <td th:text="${{p.fechaVencimientoToString}}"></td>
+			        <td>
+	                    <a th:href="@{/productosEditar/{id}(id=${p.id})}" class="btn btn-primary">
+	                        Editar
+	                    </a>
+	                </td>
+	                <td>
+	                    <a th:href="@{/productosEditar/delete/{id}(id=${p.id})}" class="btn btn-primary">
+	                        Eliminar
+	                    </a>
+	                </td>
+			        
+		      </tr>
+		    </tbody>
+	    </table>
+	</form>
+</body>
+</html>	

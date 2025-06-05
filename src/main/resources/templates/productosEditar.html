@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title><span th:text="#{persona.editar.titulo}"/></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+<script>
+    $(document).ready(function(){
+      var date_input=$('input[name="fechaNacimiento"]'); 
+      var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+      var options={
+        format: 'dd/mm/yyyy',
+        container: container,
+        todayHighlight: true,
+        autoclose: true,
+      };
+      date_input.datepicker(options);
+    })
+</script>
+<body>
+
+	
+	<div class="starter-template">
+        <h1><span  th:text="#{empresa}" /></h1>
+         <h2 th:text="${formBean.id} != null ? 'Editar persona' : 'Registrar persona'"></h2>
+    </div>
+    
+	<form  th:action="@{/productosEditar}" th:object="${formBean}" method="post">
+		<p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" />
+ 	     <input type="hidden" id="id" th:field="*{id}"> <!--esto es para que cuando edito un registro, el form no pierda el id del registro que estoy editando -->
+	            
+		<table border="0" style="align-self: center;">
+			 
+	        <tr>
+	            <td><label>Nombre"</label></td>
+	            <td><input type="text" th:field="*{nombre}" /></td>
+	             <td> <p th:if="${#fields.hasErrors('nombre')}" th:errorclass="error" th:errors="*{nombre}" /> </td>
+	        </tr>
+	        <tr>
+	            <td><label>Calorías"</label></td>
+	            <td><input type="number" th:field="*{calorias}" /></td> 
+	            <td> <p th:if="${#fields.hasErrors('calorias')}" th:errorclass="error" th:errors="*{calorias}" /> </td> 
+	        </tr>
+	        <tr>
+	            <td><label>Stock"</label></td>
+	            <td><input type="number" th:field="*{stock}" /></td> 
+	            <td> <p th:if="${#fields.hasErrors('stock')}" th:errorclass="error" th:errors="*{stock}" /> </td> 
+	        </tr>
+	         <tr>
+	            <td><label>Precio"</label></td>
+	            <td><input type="number" th:field="*{precio}" step="0.01" min="0" /></td> 
+	            <td> <p th:if="${#fields.hasErrors('precio')}" th:errorclass="error" th:errors="*{precio}" /> </td> 
+	        </tr>
+	        <tr>
+	            <td><label>Vencimiento"</label></td>
+	            <td><input type="text" id="fechaVencimiento" autocomplete="off" th:field="*{fechaVencimiento}" placeholder="DD/MM/YYYY" /></td> 
+	            <td> <p th:if="${#fields.hasErrors('fechaVencimiento')}" th:errorclass="error" th:errors="*{fechaVencimiento}" /> </td> 
+	            
+	                    
+	        </tr>
+	        
+	         
+	  </table>
+	  <table class="botones">
+	
+	      <tr>
+		      <td><input type="submit" name="action" value="Aceptar" /></td>
+		      <td><input type="submit" name="action" value="Cancelar" /></td>
+	      </tr>
+	        
+	    </table>
+	    
+	    
+	   
+	</form>
+</body>
+</html>	
