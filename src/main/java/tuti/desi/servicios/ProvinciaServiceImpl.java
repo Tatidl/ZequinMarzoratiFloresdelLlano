@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import tuti.desi.accesoDatos.IProvinciaRepo;
 import tuti.desi.entidades.Provincia;
 import tuti.desi.excepciones.Excepcion;
-import tuti.desi.presentacion.ProvinciasBuscarForm;
+import tuti.desi.presentacion.provincias.ProvinciasBuscarForm;
 
 @Service
 public class ProvinciaServiceImpl implements ProvinciaService {
@@ -52,11 +52,16 @@ public class ProvinciaServiceImpl implements ProvinciaService {
 	
 	@Override
 	public void save(Provincia p) throws Excepcion {
-		if(p.getId()==null && !repo.findByNombre(p.getNombre()).isEmpty()) //estoy dando de alta una nueva provincia y ya existe una igual?
-			throw new Excepcion("Ya existe una provincia con el mismo nombre");  
+		if(p.getId()==null)
+		{ 
+			//si llegó aquí es porque estoy registrando una nueva provincia 
+			if(!repo.findByNombre(p.getNombre()).isEmpty()) 
+				throw new Excepcion("Ya existe una provincia con el mismo nombre");  
+		}
 		else
 		{
-			if(!repo.findByNombreAndIdNot(p.getNombre(),p.getId()).isEmpty()) //si edito el nombre, valido que no exista otra con el mismo nombre?
+			//si llegó aquí es porque estoy editando una provincia existente
+			if(!repo.findByNombreAndIdNot(p.getNombre(),p.getId()).isEmpty())  //tengo que validar que no exista otra provincia (in id diferente), con el mismo nombre
 				throw new Excepcion("Existe otra provincia con el mismo nombre");
 			else
 				repo.save(p);

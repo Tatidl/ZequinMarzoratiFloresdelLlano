@@ -5,7 +5,7 @@ import java.util.List;
 
 import tuti.desi.entidades.Ciudad;
 import tuti.desi.excepciones.Excepcion;
-import tuti.desi.presentacion.CiudadesBuscarForm;
+import tuti.desi.presentacion.ciudades.CiudadesBuscarForm;
 /**
  * Clase que permite gestionar la entidad Ciudad en el sistema.
  * @author kuttel

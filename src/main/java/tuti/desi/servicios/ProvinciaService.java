@@ -5,7 +5,7 @@ import java.util.List;
 
 import tuti.desi.entidades.Provincia;
 import tuti.desi.excepciones.Excepcion;
-import tuti.desi.presentacion.ProvinciasBuscarForm;
+import tuti.desi.presentacion.provincias.ProvinciasBuscarForm;
 /**
  * Clase que permite gestionar la entidad Provincia en el sistema.
  * @author kuttel

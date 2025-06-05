@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import tuti.desi.accesoDatos.ICiudadRepo;
 import tuti.desi.entidades.Ciudad;
 import tuti.desi.excepciones.Excepcion;
-import tuti.desi.presentacion.CiudadesBuscarForm;
+import tuti.desi.presentacion.ciudades.CiudadesBuscarForm;
 
 @Service
 public class CiudadServiceImpl implements CiudadService {

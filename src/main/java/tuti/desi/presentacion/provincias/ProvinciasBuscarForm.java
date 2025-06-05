@@ -1,4 +1,4 @@
-package tuti.desi.presentacion;
+package tuti.desi.presentacion.provincias;
 
 public class ProvinciasBuscarForm {
 	private String nombre;

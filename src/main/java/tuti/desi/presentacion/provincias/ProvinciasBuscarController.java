@@ -1,4 +1,4 @@
-package tuti.desi.presentacion;
+package tuti.desi.presentacion.provincias;
 
 import java.util.List;
 
@@ -22,55 +22,54 @@ import tuti.desi.servicios.ProvinciaService;
 
 
 @Controller
-@RequestMapping("/ciudadesBuscar")
-public class CiudadesBuscarController {
+@RequestMapping("/provinciasBuscar")
+public class ProvinciasBuscarController {
 	@Autowired
     private ProvinciaService servicioProvincia;
-   
-	@Autowired
-    private CiudadService servicioCiudad;
    
 	
     @RequestMapping(method=RequestMethod.GET)
     public String preparaForm(Model modelo) {
-    	CiudadesBuscarForm form =  new CiudadesBuscarForm();
-    	 form.setProvincias(servicioProvincia.getAll());    //  en lugar de esto hacemos @ModelAttribute("allProvincias")
+    	ProvinciasBuscarForm form =  new ProvinciasBuscarForm();
        modelo.addAttribute("formBean",form);
-       return "ciudadesBuscar";
+       return "provinciasBuscar";
     }
      
     
-    @ModelAttribute("allProvincias")
-    public List<Provincia> getAllProvincias() {
-        return this.servicioProvincia.getAll();
-    }
-    
+   
     @RequestMapping( method=RequestMethod.POST)
-    public String submit( @ModelAttribute("formBean") @Valid CiudadesBuscarForm  formBean,BindingResult result, ModelMap modelo,@RequestParam String action) throws Excepcion {
-    	if(action.equals("actionBuscar"))//presionó el botón buscar
+    public String submit( @ModelAttribute("formBean") @Valid ProvinciasBuscarForm  formBean,BindingResult result, ModelMap modelo,@RequestParam String action) throws Excepcion {
+    	
+    	
+    	if(action.equals("actionBuscar"))
     	{
+    		
     		try {
-    			List<Ciudad> ciudades = servicioCiudad.filter(formBean);
-    			modelo.addAttribute("resultados",ciudades);
+    			List<Provincia> provincias = servicioProvincia.filter(formBean);
+    			modelo.addAttribute("resultados",provincias);
 			} catch (Exception e) {
 				ObjectError error = new ObjectError("globalError", e.getMessage());
 	            result.addError(error);
 			}
     		
     		modelo.addAttribute("formBean",formBean);
-        	return "ciudadesBuscar";
+        	return "provinciasBuscar";
     	}
-    	else if(action.equals("actionCancelar"))//presionó el botón cancelar
+    	else if(action.equals("actionCancelar"))
     	{
     		modelo.clear();
-    		return "redirect:/"; //voy a la index
+    		return "redirect:/";
     	}
-    	else if(action.equals("actionRegistrar")) //presionó el botón registrar
+    	else if(action.equals("actionRegistrar"))
     	{
     		modelo.clear();
-    		return "redirect:/ciudadEditar"; //voy al formulario de alta/edicion pero sin un id (notar que desde ciudadesBuscar.html redirecciono a /ciudadEditar/{id}, indicando que quiero editar esa ciudad en particular)
+    		return "redirect:/provinciaEditar";
     	}
     		
     	return "redirect:/";
+    	
+    	
     }
+
+ 
 }
