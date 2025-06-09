@@ -57,6 +57,9 @@ public class ProvinciaServiceImpl implements ProvinciaService {
 			//si llegó aquí es porque estoy registrando una nueva provincia 
 			if(!repo.findByNombre(p.getNombre()).isEmpty()) 
 				throw new Excepcion("Ya existe una provincia con el mismo nombre");  
+			else
+				repo.save(p);
+				
 		}
 		else
 		{
