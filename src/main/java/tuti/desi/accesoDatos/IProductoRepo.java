@@ -13,4 +13,6 @@ public interface IProductoRepo extends JpaRepository<Producto, Long> {
 	List<Producto> findByNombreContaining(String nombre);
 	
 	boolean existsByNombre(String nombre);
+
+	boolean existsByNombreAndIdNot(String nombre, Long id);
 }

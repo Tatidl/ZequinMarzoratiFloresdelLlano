@@ -44,10 +44,23 @@ public class ProductoServiceImpl implements ProductoService {
 		
 		if(entity.getFechaVencimiento().before(gc.getTime()))
 			throw new Excepcion("El producto se encuentra vencido");  //error global mostrado arriba
-		else if(repo.existsByNombre(entity.getNombre()))
-			throw new Excepcion("ya existe un producto con el mismo nombre", "nombre");  //error asociado al campo dni
-		else
-			repo.save(entity);
+		else 
+		{
+			if(entity.getId() ==null)
+			{
+				//es un producto nuevo
+				if(repo.existsByNombre(entity.getNombre()))			
+					throw new Excepcion("ya existe un producto con el mismo nombre", "nombre");  //error asociado al campo dni
+			}else
+			{
+				//editando un producto existente
+				if(repo.existsByNombreAndIdNot(entity.getNombre(), entity.getId()))
+					throw new Excepcion("ya existe un producto con el mismo nombre", "nombre");  //error asociado al campo dni
+			}
+		}			
+		
+		//finalmente, si no sale por ninguno de los throw exception
+		repo.save(entity);
 		
 	}
 
