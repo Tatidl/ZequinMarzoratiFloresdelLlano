@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+<head><title>Nueva entrega</title></head>
+<body>
+<h2>Nueva entrega de alimentos</h2>
+
+<form th:action="@{/entregas}" th:object="${form}" method="post">
+    <div>
+        <label>Nro de familia:</label>
+        <input type="number" th:field="*{nroFamilia}" min="1"/>
+    </div>
+    <div>
+        <label>Plato preparado:</label>
+        <select th:field="*{preparacionId}">
+            <option th:each="p : ${platos}"
+                    th:value="${p.id}"
+                    th:text="${p.receta.nombre} + ' (' + ${p.stockRacionesRestantes} + ')'">
+            </option>
+        </select>
+    </div>
+    <div>
+        <label>Cantidad de raciones:</label>
+        <input type="number" th:field="*{cantidadRaciones}" min="1"/>
+    </div>
+    <div th:if="${error}" th:text="${error}" style="color:red"></div>
+    <button type="submit">Guardar</button>
+    <a th:href="@{/entregas}">Cancelar</a>
+</form>
+</body>
+</html>
