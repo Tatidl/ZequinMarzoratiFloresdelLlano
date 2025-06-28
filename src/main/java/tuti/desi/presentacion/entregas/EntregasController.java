@@ -55,8 +55,8 @@ public class EntregasController {
             return "entregas/crearEditar";
         }
         try {
-            Long idVoluntarioHardcoded = 1L;
-            entregaAsistenciaService.alta(form, idVoluntarioHardcoded);
+            Long idVoluntario = 1L; // Hacemos que el usuario sea siempre el mismo voluntario y listo.
+            entregaAsistenciaService.alta(form, idVoluntario);
             return "redirect:/entregas";
         } catch (Excepcion e) {
             model.addAttribute("platos", preparacionRepo.findAll());
