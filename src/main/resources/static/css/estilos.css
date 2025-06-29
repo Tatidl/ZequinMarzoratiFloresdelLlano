@@ -1,11 +1,3 @@
-/*
- * estilos.css ? estilos base minimalistas para la aplicación ABMC
- * Pensado para Thymeleaf + Spring Boot.
- *   ? Paleta suave con color primario #1976d2 y gris claro para fondos.
- *   ? Tipografía base: system?ui.
- *   ? Diseño responsivo simple.
- */
-
 /* ===== Variables CSS ===== */
 :root {
   --color-primary: #1976d2;          /* azul material */
