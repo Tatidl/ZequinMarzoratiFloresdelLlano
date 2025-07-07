@@ -1,38 +1,37 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import tuti.desi.entidades.Familia;
+import tuti.desi.entidades.Preparacion;
 
 import java.time.LocalDate;
 
 @Entity
-@Data
-@Builder
+@Table(name = "entrega_asistencia")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class EntregaAsistencia {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate fecha;
-    private Integer cantidadRaciones;
+    private LocalDate fecha = LocalDate.now();
 
-    /* * ---- 1 Preparacion */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "familia_id", nullable = false)
+    private Familia familia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "preparacion_id", nullable = false)
     private Preparacion preparacion;
 
-    /* * ---- 1 Asistido */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "asistido_id", nullable = false)
-    private Asistido asistido;
+    @Column(nullable = false)
+    private Integer cantidadRaciones;
 
-    /* * ---- 1 Voluntario */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "voluntario_id", nullable = false)
-    private Voluntario voluntario;
+    private boolean activa = true;
 }

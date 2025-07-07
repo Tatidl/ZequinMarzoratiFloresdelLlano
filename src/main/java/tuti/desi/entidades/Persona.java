@@ -1,27 +1,36 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import tuti.desi.entidades.Ocupacion;
 
 import java.time.LocalDate;
 
-@Entity
-@Data
-@Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@MappedSuperclass
 public abstract class Persona {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private Integer dni;
+
     private String domicilio;
-    private String nombre;
+
+    @Column(nullable = false)
     private String apellido;
+
+    @Column(nullable = false)
+    private String nombre;
+
     private LocalDate fechaNacimiento;
-    private String ocupacion;
+
+    @Enumerated(EnumType.STRING)
+    private Ocupacion ocupacion;
 }

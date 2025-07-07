@@ -1,40 +1,35 @@
 package tuti.desi.entidades;
-/* =====================  RECETAS  ===================== */
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
-@Builder
+@Table(name = "receta")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Receta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String nombre;
+
+    @Lob
     private String descripcion;
 
-    /* 1 ---- * ItemReceta */
-    @OneToMany(mappedBy = "receta",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    @Builder.Default
-    private Set<ItemReceta> items = new HashSet<>();
+    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemReceta> items = new ArrayList<>();
 
-    /* 1 ---- * Preparacion */
-    @OneToMany(mappedBy = "receta")
-    @Builder.Default
-    private Set<Preparacion> preparaciones = new HashSet<>();
+    // Suma de las calorias totales de todos los ingredientes
+    private Integer caloriasTotales;
+
+    private boolean activa = true; // Para borrado lógico
 }
-
-/* ---------------------------------------------------- */

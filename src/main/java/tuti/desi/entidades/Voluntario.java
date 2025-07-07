@@ -1,24 +1,19 @@
 package tuti.desi.entidades;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Table(name = "voluntario")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Voluntario extends Persona {
 
-    private Long nroSeguro;
-
-    /* 1 ---- * EntregaAsistencia */
-    @OneToMany(mappedBy = "voluntario")
-    @Builder.Default
-    private Set<EntregaAsistencia> entregasRealizadas = new HashSet<>();
+    @Column(nullable = false, unique = true)
+    private String nroSeguro;
 }

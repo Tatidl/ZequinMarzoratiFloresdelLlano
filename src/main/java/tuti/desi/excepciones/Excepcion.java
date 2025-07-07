@@ -1,35 +1,13 @@
 package tuti.desi.excepciones;
 
-public class Excepcion extends Exception{
-
-	
-	/*
-	 * Atributo al que está asociado el error
-	 */
-	private  String atributo;
-	
-	public Excepcion() {
-		super();
-		
-	}
+public class Excepcion extends RuntimeException {
 
 	public Excepcion(String mensaje) {
 		super(mensaje);
 	}
 
-	public Excepcion(String mensaje, String atributo) {
-		super(mensaje);
-		this.atributo=atributo;
+	public Excepcion(String mensaje, Throwable causa) {
+		super(mensaje, causa);
 	}
-
-	public String getAtributo() {
-		return atributo;
-	}
-
-	public void setAtributo(String atributo) {
-		this.atributo = atributo;
-	}
-
-	
-
 }
+

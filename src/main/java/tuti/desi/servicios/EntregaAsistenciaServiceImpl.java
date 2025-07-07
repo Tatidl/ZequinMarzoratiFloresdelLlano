@@ -1,97 +1,85 @@
 package tuti.desi.servicios;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tuti.desi.accesoDatos.IEntregaAsistenciaRepo;
 import tuti.desi.accesoDatos.IFamiliaRepo;
 import tuti.desi.accesoDatos.IPreparacionRepo;
-import tuti.desi.accesoDatos.IVoluntarioRepo;
-import tuti.desi.entidades.*;
+import tuti.desi.entidades.Asistido;
+import tuti.desi.entidades.EntregaAsistencia;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.presentacion.entregas.EntregaForm;
+import tuti.desi.presentacion.entregas.EntregaResumenDTO;
+import tuti.desi.presentacion.entregas.EntregasBuscarForm;
+import tuti.desi.util.EntregaMapper;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class EntregaAsistenciaServiceImpl implements EntregaAsistenciaService {
 
-    private final IEntregaAsistenciaRepo repo;
+    private final IEntregaAsistenciaRepo entregaAsistenciaRepo;
     private final IFamiliaRepo familiaRepo;
     private final IPreparacionRepo preparacionRepo;
-    private final IVoluntarioRepo voluntarioRepo;
+    private final IEntregaAsistenciaRepo iEntregaAsistenciaRepo;
 
+    //-----------------
     @Override
-    @Transactional
-    public EntregaAsistencia alta(EntregaForm form, Long idVoluntario) throws Excepcion {
+    public EntregaForm alta(EntregaForm entregaForm) {
+        var fechaHoy = LocalDate.now();
 
-        LocalDate hoy = LocalDate.now();
+        var familia = familiaRepo.findByNroFamiliaAndActivaTrue(entregaForm.getNroFamilia());
 
-        // 1. Validar familia
-        Familia familia = familiaRepo.findById(form.getNroFamilia())
-                .orElseThrow(() -> new Excepcion("Familia Inexistente"));
+        var preparacion = preparacionRepo.findById(entregaForm.getPreparacionId())
+                .orElseThrow(() -> new Excepcion("Preparación no encontrada"));
 
-        // 2. Una entrega por día y por familia
-        if (repo.existsByAsistido_Familia_NroFamiliaAndFecha(familia.getNroFamilia(), hoy)) {
-            throw new Excepcion("Ya existe una entrega registrada para hoy");
-        }
+        if (iEntregaAsistenciaRepo.existsByFamiliaIdAndFechaAndActivaTrue(familia.getId(), fechaHoy))
+            throw new Excepcion("Ya se registró una entrega hoy para la familia");
 
-        // 3. Validar preparación y stock
-        Preparacion prep = preparacionRepo.findById(form.getPreparacionId())
-                .orElseThrow(() -> new Excepcion("Plato/preparación inexistente"));
+        // Validar raciones e integrantes
+        var integrantesActivos = (int) familia.getIntegrantes().stream().filter(Asistido::isActivo).count();
+        if (entregaForm.getCantidadRaciones() > integrantesActivos)
+            throw new Excepcion("No se pueden entregar más raciones que integrantes activos");
 
-        if (prep.getStockRacionesRestantes() < form.getCantidadRaciones()) {
-            throw new Excepcion("Stock insuficiente (" + prep.getStockRacionesRestantes() + ")");
-        }
+        // Validar stock
+        if (preparacion.getStockRacionesRestantes() < entregaForm.getCantidadRaciones())
+            throw new Excepcion("Stock insuficiente de la preparación");
 
-        // 4. No más raciones que integrantes
-        int integrantes = familia.getIntegrantes().size();
-        if (form.getCantidadRaciones() > integrantes) {
-            throw new Excepcion("No puede entregar más raciones (" + form.getCantidadRaciones() + ") que integrantes (" + integrantes + ")");
-        }
+        // Descontar stock y guardar
+        preparacion.setStockRacionesRestantes(preparacion.getStockRacionesRestantes() - entregaForm.getCantidadRaciones());
 
-        // 5. Voluntario
-        Voluntario voluntario = voluntarioRepo.findById(idVoluntario)
-                .orElseThrow(() -> new Excepcion("Voluntario inexistente"));
+        var entrega = new EntregaAsistencia();
+        entrega.setFamilia(familia);
+        entrega.setPreparacion(preparacion);
+        entrega.setCantidadRaciones(entregaForm.getCantidadRaciones());
+        entrega.setFecha(fechaHoy);
+        entrega.setActiva(true);
+        entregaAsistenciaRepo.save(entrega);
 
-        // 6. Chequeamos que la familia tenga integrantes
-        Asistido asistido = familia.getIntegrantes().stream()
-                .findFirst()
-                .orElseThrow(() -> new Excepcion("La familia no tiene integrantes cargados"));
-
-        // 7. Finalmente guardamos en base de datos
-        EntregaAsistencia entrega = EntregaAsistencia.builder()
-                .fecha(hoy)
-                .cantidadRaciones(form.getCantidadRaciones())
-                .preparacion(prep)
-                .asistido(asistido)
-                .voluntario(voluntario)
-                .build();
-
-        // descuento stock
-        prep.setStockRacionesRestantes(prep.getStockRacionesRestantes() - form.getCantidadRaciones());
-
-        return repo.save(entrega);
+        entregaForm.setId(entrega.getId());
+        entregaForm.setFechaEntrega(fechaHoy);
+        return entregaForm;
     }
 
     @Override
-    @Transactional
-    public void baja(Long idEntrega) throws Excepcion {
-        EntregaAsistencia entrega = repo.findById(idEntrega)
-                .orElseThrow(() -> new Excepcion("Entrega inexistente"));
-
-        // devolver stock
-        Preparacion prep = entrega.getPreparacion();
-        prep.setStockRacionesRestantes(prep.getStockRacionesRestantes() + entrega.getCantidadRaciones());
-
-        repo.delete(entrega);
+    public void baja(Long id) {
+        var entrega = entregaAsistenciaRepo.findById(id).orElseThrow(() -> new Excepcion("Entrega no encontrada"));
+        if (!entrega.isActiva()) return;
+        // Revierto el stock
+        var preparacion = entrega.getPreparacion();
+        preparacion.setStockRacionesRestantes(preparacion.getStockRacionesRestantes() + entrega.getCantidadRaciones());
+        entrega.setActiva(false);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<EntregaAsistencia> listar(LocalDate fecha, Long nroFamilia, String nombreFamilia) {
-        return repo.buscar(fecha, nroFamilia, nombreFamilia);
+    public Page<EntregaResumenDTO> listar(EntregasBuscarForm form, Pageable pageable) {
+        return entregaAsistenciaRepo.filtrar(form.getFecha(), form.getNroFamilia(), form.getNombre(), pageable)
+                .map(EntregaMapper::aDTO);
     }
 }

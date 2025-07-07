@@ -1,37 +1,37 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
-@Builder
+@Table(name = "preparacion")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Preparacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer totalRacionesPreparadas;
-    private Integer stockRacionesRestantes;
-    private LocalDate fechaCoccion;
-
-    /* * ---- 1 Receta */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "receta_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receta_id")
     private Receta receta;
 
-    /* 1 ---- * EntregaAsistencia */
-    @OneToMany(mappedBy = "preparacion")
-    @Builder.Default
-    private Set<EntregaAsistencia> entregas = new HashSet<>();
+    private Integer totalRacionesPreparadas;
+
+    private Integer stockRacionesRestantes;
+
+    private LocalDate fechaCoccion = LocalDate.now();
+
+    @OneToMany(mappedBy = "preparacion", cascade = CascadeType.ALL)
+    private List<EntregaAsistencia> entregas = new ArrayList<>();
+
+    private boolean activa = true;
 }

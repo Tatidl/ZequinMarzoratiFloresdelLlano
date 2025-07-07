@@ -1,16 +1,19 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.Entity;
-import lombok.*;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Table(name = "producto")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Producto extends Ingrediente {
 
     private Float stockDisponible;
+
     private Float precioActual;
 }

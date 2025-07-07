@@ -1,32 +1,37 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
-@Builder
+@Table(name = "familia")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Familia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long nroFamilia;
+    private Long id;
 
-    private String nombre;
-    private LocalDate fechaRegistro;
+    /** Número correlativo de familia (auto‑generado en servicio) */
+    @Column(nullable = false, unique = true)
+    private Integer nroFamilia;
 
-    /* 1 ---- * Asistido */
-    @OneToMany(mappedBy = "familia",
-            cascade = CascadeType.ALL)
-    @Builder.Default
-    private Set<Asistido> integrantes = new HashSet<>();
+    @Column(nullable = false)
+    private String nombre; // Ej: "Ramona Pérez e hijos"
+
+    private LocalDate fechaRegistro = LocalDate.now();
+
+    private boolean activa = true; // borrado lógico
+
+    // 1..* integrantes activos
+    @OneToMany(mappedBy = "familia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Asistido> integrantes = new ArrayList<>();
 }

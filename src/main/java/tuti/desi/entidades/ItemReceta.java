@@ -1,32 +1,33 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
-@Data
-@Builder
+@Table(name = "item_receta")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ItemReceta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer cantidad;
-    private Integer calorias;
-
-    /* * ---- 1 Receta */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receta_id", nullable = false)
     private Receta receta;
 
-    /* * ---- 1 Ingrediente (abstracto) */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingrediente_id", nullable = false)
     private Ingrediente ingrediente;
+
+    @Column(nullable = false)
+    private BigDecimal cantidadKg;
+
+    private Integer calorias;
 }

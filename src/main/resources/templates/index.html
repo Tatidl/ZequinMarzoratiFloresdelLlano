@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Menú principal</title>
+    <link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+</head>
+<body>
+<h2>Sistema Centro de Asistencia</h2>
+
+<nav>
+    <ul>
+        <li><a th:href="@{/familias}">ABMC Familias</a></li>
+        <li><a th:href="@{/recetas}">ABMC Recetas</a></li>
+        <li><a th:href="@{/preparaciones}">ABMC Preparaciones</a></li>
+        <li><a th:href="@{/entregas}">ABMC Entregas</a></li>
+    </ul>
+</nav>
+</body>
+</html>

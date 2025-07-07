@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Listado de recetas</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .tabla-scroll {max-height:60vh; overflow:auto;}
+        .form-filtros  label{margin-right:1rem;}
+    </style>
+</head>
+
+<body class="p-4">
+<h2 class="mb-3">Recetas registradas</h2>
+
+<!-- FILTROS ------------------------------------------------------------->
+<form class="form-filtros mb-3 row row-cols-lg-auto g-3 align-items-end"
+      method="get" th:action="@{/recetas}">
+    <div class="col">
+        <label class="form-label">Nombre
+            <input type="text" class="form-control" name="nombre"
+                   th:value="${param.nombre}">
+        </label>
+    </div>
+
+    <div class="col">
+        <label class="form-label">Calorías mín.
+            <input type="number" class="form-control" name="calMin"
+                   th:value="${param.calMin}">
+        </label>
+    </div>
+
+    <div class="col">
+        <label class="form-label">Calorías máx.
+            <input type="number" class="form-control" name="calMax"
+                   th:value="${param.calMax}">
+        </label>
+    </div>
+
+    <div class="col">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a class="btn btn-secondary" th:href="@{/recetas}">Limpiar</a>
+    </div>
+    <div class="col ms-auto">
+        <a class="btn btn-success" th:href="@{/recetas/nueva}">Nueva receta</a>
+    </div>
+</form>
+
+<!-- LISTADO ------------------------------------------------------------->
+<div class="tabla-scroll">
+    <table class="table table-hover align-middle">
+        <thead class="table-primary">
+        <tr>
+            <th>Nombre</th>
+            <th>Calorías&nbsp;totales</th>
+            <th style="width:10rem">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="r : ${pagina.content}">
+            <td th:text="${r.nombre}">Tarta *</td>
+            <td th:text="${r.caloriasTotales}">450</td>
+
+            <td>
+                <a class="btn btn-outline-primary btn-sm"
+                   th:href="@{'/recetas/' + ${r.id} + '/editar'}">Editar</a>
+
+                <form th:action="@{'/recetas/' + ${r.id} + '/baja'}"
+                      method="post" th:object="${r}" style="display:inline">
+                    <button type="submit" class="btn btn-outline-danger btn-sm"
+                            onclick="return confirm('¿Dar de baja la receta?')">
+                        Eliminar
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- PAGINACIÓN ---------------------------------------------------------->
+<nav th:if="${pagina.totalPages > 1}" class="mt-3">
+    <ul class="pagination">
+        <li class="page-item" th:classappend="${!pagina.hasPrevious()} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/recetas(page=${pagina.number-1},
+                                  nombre=${param.nombre},
+                                  calMin=${param.calMin},
+                                  calMax=${param.calMax})}">Anterior</a>
+        </li>
+
+        <li class="page-item disabled">
+            <span class="page-link"
+                  th:text="'Página ' + (${pagina.number}+1) + ' de ' + ${pagina.totalPages}"></span>
+        </li>
+
+        <li class="page-item" th:classappend="${!pagina.hasNext()} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/recetas(page=${pagina.number+1},
+                                  nombre=${param.nombre},
+                                  calMin=${param.calMin},
+                                  calMax=${param.calMax})}">Siguiente</a>
+        </li>
+    </ul>
+</nav>
+
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

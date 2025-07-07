@@ -1,31 +1,26 @@
 package tuti.desi.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Table(name = "asistido")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Asistido extends Persona {
-    private LocalDate fechaRegistro;
 
-    /* * ---- 1 Familia */
-    @ManyToOne
-    @JoinColumn(name = "familia_id")
+    private LocalDate fechaRegistro = LocalDate.now();
+
+    // Relación 1..* -> 1
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "familia_id", nullable = false)
     private Familia familia;
 
-    /* 1 ---- * EntregaAsistencia */
-    @OneToMany(mappedBy = "asistido")
-    @Builder.Default
-    private Set<EntregaAsistencia> entregas = new HashSet<>();
+    // Para borrado lógico (true = activo)
+    private boolean activo = true;
 }

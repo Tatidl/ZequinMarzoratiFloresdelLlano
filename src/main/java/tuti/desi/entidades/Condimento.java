@@ -1,9 +1,17 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.Entity;
-import lombok.*;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import tuti.desi.entidades.Ingrediente;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Condimento extends Ingrediente {} // No hay más datos en el diagrama para esta clase....
+@Table(name = "condimento")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Condimento extends Ingrediente {
+    // Sin campos adicionales por ahora
+}
