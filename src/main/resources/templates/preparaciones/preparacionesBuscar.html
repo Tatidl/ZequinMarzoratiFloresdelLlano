@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Preparaciones</title>
+
+  <!--  Bootstrap 5 básico  -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style> .w-110{width:110px;} .w-140{width:140px;} </style>
+</head>
+<body class="container py-4">
+<h2 class="mb-4">Preparaciones registradas</h2>
+
+<!-- ---------- Filtro ---------- -->
+<form method="get" th:action="@{/preparaciones}" class="row g-2 mb-3">
+  <div class="col-auto">
+    <label class="form-label mb-0 small">Fecha</label>
+    <input type="date" name="fecha" th:value="${param.fecha}"
+           class="form-control w-140"/>
+  </div>
+  <div class="col-auto">
+    <label class="form-label mb-0 small">Receta</label>
+    <input type="text" name="receta" th:value="${param.receta}"
+           class="form-control w-140" placeholder="Nombre receta"/>
+  </div>
+  <div class="col-auto align-self-end">
+    <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+    <a th:href="@{/preparaciones}" class="btn btn-outline-secondary btn-sm">Limpiar</a>
+  </div>
+  <div class="col-auto align-self-end ms-auto">
+    <a th:href="@{/preparaciones/nueva}" class="btn btn-success btn-sm">
+      + Nueva preparación
+    </a>
+  </div>
+</form>
+
+<!-- ---------- Listado ---------- -->
+<table class="table table-sm table-hover">
+  <thead class="table-primary text-center">
+  <tr>
+    <th class="w-110">Fecha</th>
+    <th>Receta</th>
+    <th class="text-end w-110">Raciones</th>
+    <th class="text-end w-110">Calorías / plato</th>
+    <th class="text-center w-110">Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="p : ${preparaciones.content}">
+    <td th:text="${#temporals.format(p.fecha,'dd/MM/yyyy')}" class="text-center"></td>
+    <td th:text="${p.receta}"></td>
+    <td th:text="${p.raciones}" class="text-end"></td>
+    <td th:text="${p.caloriasPlato}" class="text-end"></td>
+    <td class="text-center">
+      <a th:href="@{|/preparaciones/${p.id}/editar|}" class="btn btn-outline-primary btn-sm">Editar</a>
+      <form th:action="@{|/preparaciones/${p.id}/baja|}" method="post"
+            class="d-inline"
+            onsubmit="return confirm('¿Eliminar preparación?')">
+        <button class="btn btn-outline-danger btn-sm" type="submit">Eliminar</button>
+      </form>
+    </td>
+  </tr>
+  <tr th:if="${preparaciones.totalElements == 0}">
+    <td colspan="5" class="text-center fst-italic">Sin resultados</td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- ---------- Paginación ---------- -->
+<nav th:if="${preparaciones.totalPages>1}" aria-label="Paginación">
+  <ul class="pagination pagination-sm">
+    <li th:classappend="${preparaciones.first} ? 'disabled'" class="page-item">
+      <a th:href="@{/preparaciones(page=${page.number-1},
+                       fecha=${param.fecha}, receta=${param.receta})}"
+         class="page-link">«</a>
+    </li>
+    <li class="page-item disabled">
+            <span class="page-link"
+                  th:text="'Página '+(${preparaciones.number}+1)+' / '+${preparaciones.totalPages}"></span>
+    </li>
+    <li th:classappend="${preparaciones.last} ? 'disabled'" class="page-item">
+      <a th:href="@{/preparaciones(page=${preparaciones.number+1},
+                       fecha=${param.fecha}, receta=${param.receta})}"
+         class="page-link">»</a>
+    </li>
+  </ul>
+</nav>
+
+<!-- flash msg -->
+<div th:if="${msg}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+  <span th:text="${msg}"></span>
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

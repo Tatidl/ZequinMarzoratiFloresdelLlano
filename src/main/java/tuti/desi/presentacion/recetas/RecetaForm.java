@@ -26,6 +26,4 @@ public class RecetaForm {
     @Valid
     @Size(min = 1, message = "Debe cargar al menos un ingrediente")
     private List<ItemRecetaForm> ingredientes = new ArrayList<>();
-
-
 }

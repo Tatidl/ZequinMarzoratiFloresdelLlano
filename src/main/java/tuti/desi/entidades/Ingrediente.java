@@ -19,6 +19,4 @@ public class Ingrediente {
 
     @Column(nullable = false)
     private String nombre;
-
-    private Integer calorias;
 }

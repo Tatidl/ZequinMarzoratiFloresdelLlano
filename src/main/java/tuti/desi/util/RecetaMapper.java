@@ -20,7 +20,7 @@ public class RecetaMapper {
             var itemReceta = new ItemReceta();
             itemReceta.setId(ingrediente.getId());
             itemReceta.setReceta(receta);
-            itemReceta.setIngrediente(buscardorIngredientes.apply(ingrediente.getId()));
+            itemReceta.setIngrediente(buscardorIngredientes.apply(ingrediente.getIdIngrediente()));
             itemReceta.setCantidadKg(BigDecimal.valueOf(ingrediente.getCantidadKg()));
             itemReceta.setCalorias(ingrediente.getCalorias());
             receta.getItems().add(itemReceta);
@@ -36,7 +36,7 @@ public class RecetaMapper {
             var itemReceta = new ItemReceta();
             itemReceta.setId(ingrediente.getId());
             itemReceta.setReceta(recetaObjetivo);
-            itemReceta.setIngrediente(buscardorIngredientes.apply(ingrediente.getId()));
+            itemReceta.setIngrediente(buscardorIngredientes.apply(ingrediente.getIdIngrediente()));
             itemReceta.setCantidadKg(BigDecimal.valueOf(ingrediente.getCantidadKg()));
             itemReceta.setCalorias(ingrediente.getCalorias());
             recetaObjetivo.getItems().add(itemReceta);

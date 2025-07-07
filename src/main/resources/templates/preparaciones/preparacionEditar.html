@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${preparacionForm.id==null? 'Nueva preparación':'Editar preparación'}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>.w-160{width:160px}</style>
+</head>
+<body class="container py-4">
+<h2 th:text="${preparacionForm.id==null? 'Nueva preparación':'Editar preparación'}"></h2>
+
+<form th:action="@{/preparaciones}" th:object="${preparacionForm}" method="post" class="needs-validation" novalidate>
+    <input type="hidden" th:field="*{id}"/>
+
+    <div class="mb-3 row">
+        <label for="fecha" class="col-sm-2 col-form-label">Fecha</label>
+        <div class="col-sm-3">
+            <input type="date" th:field="*{fecha}" id="fecha"
+                   class="form-control" required>
+            <div class="invalid-feedback">Ingrese una fecha válida (no futura).</div>
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        <label for="receta" class="col-sm-2 col-form-label">Receta</label>
+        <div class="col-sm-5">
+            <select th:field="*{idReceta}" id="receta" class="form-select" required
+                    th:disabled="${preparacionForm.id!=null}">
+                <option value="" disabled selected>-- Seleccione receta --</option>
+                <option th:each="r : ${preparacionForm}"
+                        th:value="${r.id}"
+                        th:text="${r.nombre}"></option>
+            </select>
+            <div class="invalid-feedback">Seleccione una receta.</div>
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        <label for="raciones" class="col-sm-2 col-form-label">Raciones</label>
+        <div class="col-sm-2">
+            <input type="number" th:field="*{raciones}" min="1" step="1"
+                   id="raciones" class="form-control text-end"
+                   th:disabled="${preparacionForm.id!=null}" required>
+            <div class="invalid-feedback">Ingrese un número positivo.</div>
+        </div>
+    </div>
+
+    <!-- ----------- Botones ----------- -->
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a th:href="@{/preparaciones}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+
+    <!-- campo de error global -->
+    <div th:if="${#fields.hasGlobalErrors()}"
+         class="alert alert-danger mt-3" role="alert"
+         th:each="err : ${#fields.globalErrors()}"
+         th:text="${err}"></div>
+</form>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script>
+    /* --------------- Validación Bootstrap --------------- */
+    (() => {
+        'use strict';
+        window.addEventListener('load', () => {
+            const forms = document.querySelectorAll('.needs-validation');
+            forms.forEach(form => {
+                form.addEventListener('submit', ev => {
+                    if (!form.checkValidity()) { ev.preventDefault(); ev.stopPropagation(); }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        });
+    })();
+</script>
+</body>
+</html>
