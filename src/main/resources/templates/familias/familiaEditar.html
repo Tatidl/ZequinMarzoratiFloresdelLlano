@@ -3,17 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <title th:text="${form.id != null ? 'Editar' : 'Nueva'} + ' familia'">Familia</title>
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-
-  <style>
-    .btn-del { padding:0 .5rem }
-  </style>
+  <style>.btn-del { padding: 0 .5rem; }</style>
 </head>
 <body class="container py-4">
-
-<h2 th:text="${form.id != null ? 'Editar familia' : 'Nueva familia'}"
-    class="mb-4 text-primary"></h2>
+<h2 th:text="${form.id != null ? 'Editar familia' : 'Nueva familia'}" class="mb-4 text-primary"></h2>
 
 <form th:action="@{/familias}" th:object="${form}" method="post">
   <input type="hidden" th:if="${form.id}" th:field="*{id}"/>
@@ -33,7 +27,6 @@
   <!-- Integrantes -->
   <fieldset class="border p-3 mb-4">
     <legend class="float-none w-auto px-2">Integrantes</legend>
-
     <div class="table-responsive">
       <table class="table table-sm align-middle mb-2">
         <thead class="table-primary text-center">
@@ -43,25 +36,17 @@
         </tr>
         </thead>
         <tbody id="integrantes-body">
-        <!-- Integrantes ya existentes -->
         <tr th:each="i,stat : *{integrantes}" th:id="'row-'+${stat.index}">
-          <!-- id oculto para conservar la entidad -->
-          <input type="hidden"
-                 th:field="*{integrantes[__${stat.index}__].id}"/>
-
-          <td><input type="number" class="form-control"
-                     th:field="*{integrantes[__${stat.index}__].dni}" min="1"/></td>
-          <td><input type="text"   class="form-control"
-                     th:field="*{integrantes[__${stat.index}__].apellido}"/></td>
-          <td><input type="text"   class="form-control"
-                     th:field="*{integrantes[__${stat.index}__].nombre}"/></td>
+          <input type="hidden" th:field="*{integrantes[__${stat.index}__].id}"/>
+          <td><input type="number" class="form-control" th:field="*{integrantes[__${stat.index}__].dni}" min="1"/></td>
+          <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].apellido}"/></td>
+          <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].nombre}"/></td>
           <td><input type="text"   class="form-control"
                      th:field="*{integrantes[__${stat.index}__].fechaNacimiento}"
                      pattern="\d{2}/\d{2}/\d{4}"
                      placeholder="dd/mm/aaaa"/></td>
           <td>
-            <select class="form-select"
-                    th:field="*{integrantes[__${stat.index}__].ocupacion}">
+            <select class="form-select" th:field="*{integrantes[__${stat.index}__].ocupacion}">
               <option value="">--Seleccione--</option>
               <option value="EMPLEADO">Empleado</option>
               <option value="ESTUDIANTE">Estudiante</option>
@@ -71,34 +56,31 @@
             </select>
           </td>
           <td class="text-center">
-            <button type="button" class="btn btn-outline-danger btn-sm btn-del"
-                    onclick="removeIntegrante(this)">🗑</button>
+            <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="removeIntegrante(this)">🗑</button>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-
-    <button type="button" class="btn btn-primary"
-            onclick="addIntegrante()">Agregar integrante</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="addIntegrante()">Agregar integrante</button>
   </fieldset>
 
-  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
 
-  <button type="submit" class="btn btn-success">Guardar</button>
-  <a th:href="@{/familias}" class="btn btn-link">Cancelar</a>
+  <div class="mt-4">
+    <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+    <a th:href="@{/familias}" class="btn btn-outline-secondary btn-sm">Cancelar</a>
+    <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
+  </div>
 </form>
 
-<!-- ─────────── Fila plantilla oculta ─────────── -->
 <table style="display:none">
   <tr id="row-template">
-    <!-- input oculto id para nuevos integrantes (permanece vacío) -->
     <input type="hidden" name="integrantes[0].id"/>
-
     <td><input type="number" class="form-control" name="integrantes[0].dni" min="1"/></td>
-    <td><input type="text"   class="form-control" name="integrantes[0].apellido"/></td>
-    <td><input type="text"   class="form-control" name="integrantes[0].nombre"/></td>
-    <td><input type="date"   class="form-control" name="integrantes[0].fechaNacimiento"/></td>
+    <td><input type="text" class="form-control" name="integrantes[0].apellido"/></td>
+    <td><input type="text" class="form-control" name="integrantes[0].nombre"/></td>
+    <td><input type="date" class="form-control" name="integrantes[0].fechaNacimiento"/></td>
     <td>
       <select class="form-select" name="integrantes[0].ocupacion">
         <option value="">--Seleccione--</option>
@@ -110,22 +92,18 @@
       </select>
     </td>
     <td class="text-center">
-      <button type="button" class="btn btn-outline-danger btn-sm btn-del"
-              onclick="removeIntegrante(this)">🗑</button>
+      <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="removeIntegrante(this)">🗑</button>
     </td>
   </tr>
 </table>
 
-<!-- ─────────── JavaScript embebido ─────────── -->
 <script>
   function addIntegrante() {
     const tbody = document.getElementById('integrantes-body');
-    const idx   = tbody.rows.length;
-    const tpl   = document.getElementById('row-template').cloneNode(true);
-
+    const idx = tbody.rows.length;
+    const tpl = document.getElementById('row-template').cloneNode(true);
     tpl.id = 'row-' + idx;
     tpl.style.display = '';
-
     tpl.querySelectorAll('input,select').forEach(el => {
       el.name = el.name.replace(/\[\d+]/, '[' + idx + ']');
       if (el.id) el.id = el.id.replace(/\d+$/, idx);
@@ -139,6 +117,5 @@
     btn.closest('tr').remove();
   }
 </script>
-
 </body>
 </html>

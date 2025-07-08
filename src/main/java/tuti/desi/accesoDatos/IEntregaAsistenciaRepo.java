@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface IEntregaAsistenciaRepo extends JpaRepository<EntregaAsistencia, Long> {
     boolean existsByFamiliaIdAndFechaAndActivaTrue(Long idFamilia, LocalDate fecha);
-    @Query("""
+    @Query("""  
         SELECT e
         FROM EntregaAsistencia e
         WHERE e.activa = true
@@ -21,4 +21,5 @@ public interface IEntregaAsistenciaRepo extends JpaRepository<EntregaAsistencia,
         AND (:nombre IS NULL OR UPPER(e.familia.nombre) LIKE UPPER(CONCAT('%', :nombre, '%')))
     """)
     Page<EntregaAsistencia> filtrar(LocalDate fecha, Integer nroFamilia, String nombre, Pageable pageable);
+    Optional<EntregaAsistencia> findTopByFamiliaIdAndActivaTrueOrderByFechaDesc(Long id);
 }

@@ -9,4 +9,5 @@ public record FamiliaResumenDTO(
         String nombre,
         Integer integrantesActivos,
         LocalDate fechaRegistro,
+        LocalDate fechaUltimaAsistencia,
         List<IntegranteDTO> integrantes) {}

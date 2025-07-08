@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 public class PreparacionForm {
     private Long id;
 
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @PastOrPresent(message = "La fecha no puede ser futura")
     @NotNull(message = "Debe ingresar la fecha de preparación")
     private LocalDate fecha;

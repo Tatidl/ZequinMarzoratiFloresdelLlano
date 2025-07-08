@@ -6,5 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FamiliasBuscarForm {
+    private Integer nroFamilia;
     private String filtro;
 }

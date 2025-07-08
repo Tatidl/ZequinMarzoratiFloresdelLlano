@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva entrega</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>.w-150 { width: 150px; }</style>
+</head>
+<body class="container py-4">
+<h2 class="mb-4">Nueva entrega de alimentos</h2>
+
+<form th:action="@{/entregas}" th:object="${entregaForm}"
+      class="needs-validation" novalidate method="post">
+
+    <!-- Nº de familia -->
+    <div class="mb-3 row">
+        <label for="nroFamilia" class="col-sm-2 col-form-label">Nº familia</label>
+        <div class="col-sm-3">
+            <input type="number" id="nroFamilia" th:field="*{nroFamilia}" min="1"
+                   class="form-control text-end" required>
+            <div class="invalid-feedback">Indique el número de familia</div>
+        </div>
+    </div>
+
+    <!-- Plato preparado hoy -->
+    <div class="mb-3 row">
+        <label for="preparacionId" class="col-sm-2 col-form-label">Plato</label>
+        <div class="col-sm-4">
+            <select id="preparacionId" th:field="*{preparacionId}" class="form-select" required>
+                <option value="" disabled selected>-- Seleccione --</option>
+                <option th:each="p : ${preparacionesHoy}"
+                        th:value="${p.id}"
+                        th:text="${p.receta.nombre} + ' (' + ${p.stockRacionesRestantes} + ' raciones)'">
+                </option>
+            </select>
+            <div class="invalid-feedback">Seleccione el plato preparado</div>
+        </div>
+    </div>
+
+    <!-- Cantidad de raciones -->
+    <div class="mb-3 row">
+        <label for="cantidadRaciones" class="col-sm-2 col-form-label">Raciones</label>
+        <div class="col-sm-3">
+            <input type="number" id="cantidadRaciones" th:field="*{cantidadRaciones}" min="1"
+                   class="form-control text-end" required>
+            <div class="invalid-feedback">Ingrese una cantidad válida</div>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+        <a th:href="@{/entregas}" class="btn btn-outline-secondary btn-sm">Cancelar</a>
+        <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
+    </div>
+
+    <!-- Error global -->
+    <div th:if="${#fields.hasGlobalErrors()}"
+         class="alert alert-danger mt-3"
+         th:each="e : ${#fields.globalErrors()}"
+         th:text="${e}"></div>
+</form>
+
+<script>
+    (() => {
+        'use strict';
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.needs-validation').forEach(f => {
+                f.addEventListener('submit', ev => {
+                    if (!f.checkValidity()) { ev.preventDefault(); ev.stopPropagation(); }
+                    f.classList.add('was-validated');
+                }, false);
+            });
+        });
+    })();
+</script>
+</body>
+</html>

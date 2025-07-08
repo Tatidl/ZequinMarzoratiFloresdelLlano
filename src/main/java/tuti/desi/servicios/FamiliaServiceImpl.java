@@ -5,14 +5,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tuti.desi.accesoDatos.IEntregaAsistenciaRepo;
 import tuti.desi.accesoDatos.IFamiliaRepo;
 import tuti.desi.entidades.Asistido;
 import tuti.desi.entidades.Familia;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.presentacion.familias.FamiliaForm;
 import tuti.desi.presentacion.familias.FamiliaResumenDTO;
+import tuti.desi.presentacion.familias.FamiliasBuscarForm;
 import tuti.desi.presentacion.familias.IntegranteDTO;
-import tuti.desi.servicios.FamiliaService;
 import tuti.desi.util.FamiliaMapper;
 
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class FamiliaServiceImpl implements FamiliaService {
 
     private final IFamiliaRepo repo;
+    private final IEntregaAsistenciaRepo entregaRepo;
 
     // Auxiliares
     private void validarDNIUnico(FamiliaForm form) {
@@ -69,6 +71,7 @@ public class FamiliaServiceImpl implements FamiliaService {
         Familia familia = repo.findById(id)
                 .orElseThrow(() -> new Excepcion("Familia no encontrada"));
 
+        form.setNroFamilia(familia.getNroFamilia());
         FamiliaMapper.fusionar(familia, form);
         return form;
     }
@@ -81,16 +84,26 @@ public class FamiliaServiceImpl implements FamiliaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<FamiliaResumenDTO> listar(String filtro, Pageable pageable) {
-
-        var pagina = repo.findByActivaTrueAndNombreContainingIgnoreCase(
-                filtro == null ? "" : filtro,
-                pageable);
+        FamiliasBuscarForm form = new FamiliasBuscarForm();
+        if (filtro != null) {
+            try {
+                form.setNroFamilia(Integer.parseInt(filtro));
+            } catch (NumberFormatException e) {
+                form.setFiltro(filtro);
+            }
+        }
+        var pagina = repo.findByActivaTrueAndNroFamiliaAndNombre(form.getNroFamilia(), form.getFiltro(), pageable);
 
         return pagina.map(f -> {
             var integrantesActivos = f.getIntegrantes().stream()
                     .filter(Asistido::isActivo)
                     .toList();
+
+            var ultimaAsistencia = entregaRepo.findTopByFamiliaIdAndActivaTrueOrderByFechaDesc(f.getId())
+                    .map(e -> e.getFecha())
+                    .orElse(null);
 
             var integrantesDto = integrantesActivos.stream()
                     .map(a -> new IntegranteDTO(
@@ -108,6 +121,7 @@ public class FamiliaServiceImpl implements FamiliaService {
                     f.getNombre(),
                     integrantesDto.size(),
                     f.getFechaRegistro(),
+                    ultimaAsistencia,
                     integrantesDto);
         });
     }

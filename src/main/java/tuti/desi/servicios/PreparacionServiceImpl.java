@@ -59,13 +59,23 @@ public class PreparacionServiceImpl  implements PreparacionService {
 
     @Override
     public PreparacionForm editarFecha(Long id, PreparacionForm form) {
+        System.out.println("Editando preparación ID: " + id + ", Fecha recibida: " + form.getFecha()); // Log para depuración
         var preparacion = preparacionRepo.findById(id).orElseThrow(() -> new Excepcion("Preparación no encontrada"));
         if (!preparacion.isActiva()) throw new Excepcion("Preparación eliminada");
-        if (form.getFecha().isAfter(LocalDate.now())) throw new Excepcion("La fecha no puede ser futura");
-        if (preparacionRepo.existsByRecetaIdAndFechaCoccionAndActivaTrue(preparacion.getReceta().getId(), preparacion.getFechaCoccion())) {
+
+        // Validar fecha nueva
+        var fechaNueva = form.getFecha();
+        if (fechaNueva == null) throw new Excepcion("Debe ingresar la fecha");
+        if (fechaNueva.isAfter(LocalDate.now())) throw new Excepcion("La fecha no puede ser futura");
+        if (!fechaNueva.equals(preparacion.getFechaCoccion()) && preparacionRepo.existsByRecetaIdAndFechaCoccionAndActivaTrue(
+                preparacion.getReceta().getId(), fechaNueva)) {
             throw new Excepcion("Ya existe una preparación de esa receta para la fecha indicada");
         }
-        preparacion.setFechaCoccion(form.getFecha());
+
+        preparacion.setFechaCoccion(fechaNueva);
+        System.out.println("Fecha asignada a preparación: " + fechaNueva); // Log para depuración
+        preparacionRepo.save(preparacion);
+        System.out.println("Preparación guardada con ID: " + preparacion.getId()); // Log para depuración
         return form;
     }
 
@@ -95,6 +105,20 @@ public class PreparacionServiceImpl  implements PreparacionService {
                 p.getTotalRacionesPreparadas(),
                 p.getReceta().getCaloriasTotales()
         ));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PreparacionForm obtener(Long id) {
+        var p = preparacionRepo.findById(id)
+                .orElseThrow(() -> new Excepcion("Preparación no encontrada"));
+
+        var form = new PreparacionForm();
+        form.setId(p.getId());
+        form.setFecha(p.getFechaCoccion());
+        form.setIdReceta(p.getReceta().getId());
+        form.setRaciones(p.getTotalRacionesPreparadas());
+        return form;
     }
 
     // Auxiliar

@@ -20,4 +20,6 @@ public interface IRecetaRepo extends JpaRepository<Receta,Long> {
     AND (:maxCal IS NULL OR r.caloriasTotales <= :maxCal)
     """)
     Page<Receta> filtrar(String nombre, Integer minCal, Integer maxCal, Pageable pageable);
+
+    Iterable<?> findByActivaTrueOrderByNombre();
 }

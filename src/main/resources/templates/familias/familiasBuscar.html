@@ -3,84 +3,73 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Listado de familias</title>
-
-    <!-- Si ya usas Bootstrap en el resto del sitio, pon tu propio CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-
 </head>
 <body class="container py-4">
+<h2 class="mb-4 text-primary">Familias asistidas</h2>
 
-<h2 class="mb-3 text-primary">Familias asistidas</h2>
+<div class="mb-3">
+    <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
+</div>
 
 <form class="row gy-2 align-items-end mb-4" method="get" th:action="@{/familias}">
     <div class="col-auto">
-        <label class="form-label">Nro&nbsp;Familia
-            <input type="number" class="form-control form-control-sm"
-                   name="nroFamilia" th:value="${param.nroFamilia}"/>
+        <label class="form-label">Nro Familia
+            <input type="number" class="form-control form-control-sm" name="nroFamilia" th:value="${param.nroFamilia}"/>
         </label>
     </div>
     <div class="col-auto">
         <label class="form-label">Nombre
-            <input type="text" class="form-control form-control-sm"
-                   name="nombre" th:value="${param.nombre}"/>
+            <input type="text" class="form-control form-control-sm" name="nombre" th:value="${param.nombre}"/>
         </label>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-sm btn-primary">Buscar</button>
-        <a th:href="@{/familias/nueva}" class="btn btn-sm btn-success">Nueva familia</a>
+        <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+        <a th:href="@{/familias/nueva}" class="btn btn-success btn-sm">Nueva familia</a>
     </div>
 </form>
 
-<!-- Si page viene nulo evitamos error -->
 <div th:if="${page != null}">
     <table class="table table-sm table-bordered align-middle">
         <thead class="table-primary text-center">
         <tr>
-            <th>Nro</th><th>Nombre</th><th>Alta</th><th># Integrantes</th><th style="width:110px">Acciones</th>
+            <th>Nro</th><th>Nombre</th><th>Alta</th><th>Última asistencia</th><th># Integrantes</th><th style="width:110px">Acciones</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="f : ${page.content}">
             <td th:text="${f.nroFamilia}">1</td>
             <td th:text="${f.nombre}">Familia Flores</td>
-            <!-- Usa la propiedad existente en tu DTO -->
             <td th:text="${#temporals.format(f.fechaRegistro,'dd/MM/yyyy')}">12/05/25</td>
+            <td th:text="${f.fechaUltimaAsistencia != null ? #temporals.format(f.fechaUltimaAsistencia,'dd/MM/yyyy') : '--'}">--</td>
             <td th:text="${f.integrantesActivos}">3</td>
             <td class="text-center">
-                <a class="btn btn-sm btn-outline-primary"
-                   th:href="@{'/familias/' + ${f.id} + '/editar'}">Editar</a>
+                <a class="btn btn-outline-primary btn-sm" th:href="@{'/familias/' + ${f.id} + '/editar'}">Editar</a>
                 <form th:action="@{'/familias/' + ${f.id}}" method="post" style="display:inline">
                     <input type="hidden" name="_method" value="delete"/>
-                    <button type="submit" class="btn btn-sm btn-outline-danger"
-                            onclick="return confirm('¿Eliminar familia?')">🗑</button>
+                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Eliminar familia?')">🗑</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <!-- paginación -->
-    <nav th:if="${page.totalPages > 1}" class="mt-2">
+    <!-- Paginación -->
+    <nav th:if="${page.totalPages > 1}" class="mt-3">
         <span class="me-3" th:text="'Página ' + (${page.number}+1) + ' / ' + ${page.totalPages}"></span>
-
-        <a class="btn btn-sm btn-outline-secondary me-1"
-           th:if="${page.hasPrevious()}"
-           th:href="@{/familias(page=${page.number-1}, nroFamilia=${param.nroFamilia}, nombre=${param.nombre})}">
-            &laquo; Anterior
-        </a>
-
-        <a class="btn btn-sm btn-outline-secondary"
-           th:if="${page.hasNext()}"
-           th:href="@{/familias(page=${page.number+1}, nroFamilia=${param.nroFamilia}, nombre=${param.nombre})}">
-            Siguiente &raquo;
-        </a>
+        <a class="btn btn-outline-secondary btn-sm me-1" th:if="${page.hasPrevious()}"
+           th:href="@{/familias(page=${page.number-1}, nroFamilia=${param.nroFamilia}, nombre=${param.nombre})}">Anterior</a>
+        <a class="btn btn-outline-secondary btn-sm" th:if="${page.hasNext()}"
+           th:href="@{/familias(page=${page.number+1}, nroFamilia=${param.nroFamilia}, nombre=${param.nombre})}">Siguiente</a>
     </nav>
 </div>
 
-<!-- Mensaje cuando no hay resultados -->
-<p th:if="${page != null and page.totalElements == 0}" class="alert alert-info">
+<p th:if="${page != null and page.totalElements == 0}" class="alert alert-info mt-3">
     No se encontraron familias con los filtros aplicados.
 </p>
 
+<div class="mt-4">
+    <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
+</div>
 </body>
 </html>

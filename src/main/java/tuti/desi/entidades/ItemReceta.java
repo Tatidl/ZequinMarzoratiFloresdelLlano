@@ -1,6 +1,7 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,5 +30,6 @@ public class ItemReceta {
     @Column(nullable = false)
     private BigDecimal cantidadKg;
 
+    @Positive(message = "Las calorías deben ser un número positivo")
     private Integer calorias;
 }

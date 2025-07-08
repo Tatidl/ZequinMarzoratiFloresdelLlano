@@ -15,4 +15,5 @@ public interface PreparacionService {
     PreparacionForm editarFecha(Long id, PreparacionForm form);
     void baja(Long id);
     Page<PreparacionResumenDTO> listar(String nombreReceta, LocalDate fecha, Pageable pageable);
+    PreparacionForm obtener(Long id);
 }

@@ -40,6 +40,7 @@ public class RecetaServiceImpl implements RecetaService {
     @Override
     public RecetaForm editar(Long id, RecetaForm form) {
         var receta = recetaRepo.findById(id).orElseThrow(() -> new Excepcion("Receta no encontrada"));
+        form.setNombre(receta.getNombre());
         RecetaMapper.fusionar(receta, form, this::getIngrediente);
         return form;
     }

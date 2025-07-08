@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import tuti.desi.excepciones.Excepcion;
 import tuti.desi.servicios.FamiliaService;
 
 @Controller
@@ -58,20 +59,26 @@ public class FamiliaController {
     public String guardar(@Valid @ModelAttribute("form") FamiliaForm form,
                           BindingResult br,
                           RedirectAttributes ra,
-                          ServletRequest request) {
-
+                          ServletRequest request,
+                          Model model) {
         if (br.hasErrors()) {
             return "familias/familiaEditar";
         }
 
-        if (form.getId() == null) {
-            familiaService.alta(form);
-            ra.addFlashAttribute("msg", "Familia registrada");
-        } else {
-            familiaService.editar(form.getId(), form);
-            ra.addFlashAttribute("msg", "Familia actualizada");
+        try {
+            if (form.getId() == null) {
+                familiaService.alta(form);
+                ra.addFlashAttribute("msg", "Familia registrada");
+            } else {
+                familiaService.editar(form.getId(), form);
+                ra.addFlashAttribute("msg", "Familia actualizada");
+            }
+            return "redirect:/familias";
+        } catch (Excepcion e) {
+            // Agregar el mensaje de error al modelo para mostrarlo en la vista
+            model.addAttribute("error", e.getMessage());
+            return "familias/familiaEditar";
         }
-        return "redirect:/familias";
     }
 
     // ---------- BAJA LÓGICA -------------------------------------------------
