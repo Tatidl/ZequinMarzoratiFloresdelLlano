@@ -6,11 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import tuti.desi.entidades.Receta;
 
-import java.util.List;
-
 public interface IRecetaRepo extends JpaRepository<Receta,Long> {
     boolean existsByNombreIgnoreCaseAndActivaTrue(String nombre);
-
     @Query("""
     SELECT r
     FROM Receta r
@@ -20,6 +17,5 @@ public interface IRecetaRepo extends JpaRepository<Receta,Long> {
     AND (:maxCal IS NULL OR r.caloriasTotales <= :maxCal)
     """)
     Page<Receta> filtrar(String nombre, Integer minCal, Integer maxCal, Pageable pageable);
-
     Iterable<?> findByActivaTrueOrderByNombre();
 }

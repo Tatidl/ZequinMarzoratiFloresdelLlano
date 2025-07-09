@@ -20,7 +20,7 @@ public class Familia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Número correlativo de familia (auto‑generado en servicio) */
+    /** Número correlativo de familia */
     @Column(nullable = false, unique = true)
     private Integer nroFamilia;
 

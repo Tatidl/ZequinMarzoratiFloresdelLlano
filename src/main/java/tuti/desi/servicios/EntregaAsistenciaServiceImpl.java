@@ -34,6 +34,9 @@ public class EntregaAsistenciaServiceImpl implements EntregaAsistenciaService {
         var fechaHoy = LocalDate.now();
 
         var familia = familiaRepo.findByNroFamiliaAndActivaTrue(entregaForm.getNroFamilia());
+        if (familia == null) {
+            throw new Excepcion("Familia no encontrada o inactiva");
+        }
 
         var preparacion = preparacionRepo.findById(entregaForm.getPreparacionId())
                 .orElseThrow(() -> new Excepcion("Preparación no encontrada"));
@@ -69,9 +72,14 @@ public class EntregaAsistenciaServiceImpl implements EntregaAsistenciaService {
     @Override
     public void baja(Long id) {
         var entrega = entregaAsistenciaRepo.findById(id).orElseThrow(() -> new Excepcion("Entrega no encontrada"));
-        if (!entrega.isActiva()) return;
+        if (!entrega.isActiva()) {
+            return;
+        }
         // Revierto el stock
         var preparacion = entrega.getPreparacion();
+        if (preparacion == null) {
+            throw new Excepcion("Preparación asociada no encontrada");
+        }
         preparacion.setStockRacionesRestantes(preparacion.getStockRacionesRestantes() + entrega.getCantidadRaciones());
         entrega.setActiva(false);
     }

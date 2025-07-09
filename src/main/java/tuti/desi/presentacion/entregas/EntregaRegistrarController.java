@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tuti.desi.accesoDatos.IPreparacionRepo;
+import tuti.desi.excepciones.Excepcion;
 import tuti.desi.servicios.EntregaAsistenciaService;
 
 import java.time.LocalDate;
@@ -33,16 +34,23 @@ public class EntregaRegistrarController {
                           BindingResult br,
                           RedirectAttributes ra) {
         if (br.hasErrors()) {
-            // Reagregar preparacionesHoy en caso de error para evitar que el select esté vacío
+            // Vuelvo a cagrar preparacionesHoy en caso de error para evitar que el select esté vacío
             ra.addFlashAttribute("entregaForm", form);
-            ra.addFlashAttribute("org.springframework.validation.BindingResult.entregaForm", br);
+            ra.addFlashAttribute("entregaFormBr", br);
+            ra.addFlashAttribute("preparacionesHoy", preparacionRepo.findByFechaCoccionAndActivaTrueAndStockRacionesRestantesGreaterThan(
+                    LocalDate.now(), 0));
+            return "redirect:/entregas/nueva";
+        } try {
+            entregaAsistenciaService.alta(form);
+            ra.addFlashAttribute("message", "Entrega registrada correctamente");
+            return "redirect:/entregas";
+        } catch (Excepcion e) {
+            ra.addFlashAttribute("entregaForm", form);
+            ra.addFlashAttribute("error", e.getMessage());
             ra.addFlashAttribute("preparacionesHoy", preparacionRepo.findByFechaCoccionAndActivaTrueAndStockRacionesRestantesGreaterThan(
                     LocalDate.now(), 0));
             return "redirect:/entregas/nueva";
         }
-        entregaAsistenciaService.alta(form);
-        ra.addFlashAttribute("message", "Entrega registrada correctamente");
-        return "redirect:/entregas";
     }
 
     @PostMapping("/{id}/baja")

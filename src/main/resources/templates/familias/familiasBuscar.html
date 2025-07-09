@@ -8,10 +8,6 @@
 <body class="container py-4">
 <h2 class="mb-4 text-primary">Familias asistidas</h2>
 
-<div class="mb-3">
-    <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
-</div>
-
 <form class="row gy-2 align-items-end mb-4" method="get" th:action="@{/familias}">
     <div class="col-auto">
         <label class="form-label">Nro Familia
@@ -38,11 +34,11 @@
         </thead>
         <tbody>
         <tr th:each="f : ${page.content}">
-            <td th:text="${f.nroFamilia}">1</td>
-            <td th:text="${f.nombre}">Familia Flores</td>
-            <td th:text="${#temporals.format(f.fechaRegistro,'dd/MM/yyyy')}">12/05/25</td>
-            <td th:text="${f.fechaUltimaAsistencia != null ? #temporals.format(f.fechaUltimaAsistencia,'dd/MM/yyyy') : '--'}">--</td>
-            <td th:text="${f.integrantesActivos}">3</td>
+            <td th:text="${f.nroFamilia}"></td>
+            <td th:text="${f.nombre}"></td>
+            <td th:text="${#temporals.format(f.fechaRegistro,'dd/MM/yyyy')}"></td>
+            <td th:text="${f.fechaUltimaAsistencia != null ? #temporals.format(f.fechaUltimaAsistencia,'dd/MM/yyyy') : '--'}"></td>
+            <td th:text="${f.integrantesActivos}"></td>
             <td class="text-center">
                 <a class="btn btn-outline-primary btn-sm" th:href="@{'/familias/' + ${f.id} + '/editar'}">Editar</a>
                 <form th:action="@{'/familias/' + ${f.id}}" method="post" style="display:inline">

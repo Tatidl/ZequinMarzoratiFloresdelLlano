@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tuti.desi.entidades.Familia;
-import tuti.desi.entidades.Preparacion;
 
 import java.time.LocalDate;
 

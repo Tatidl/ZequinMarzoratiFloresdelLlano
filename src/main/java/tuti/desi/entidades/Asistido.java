@@ -21,6 +21,6 @@ public class Asistido extends Persona {
     @JoinColumn(name = "familia_id", nullable = false)
     private Familia familia;
 
-    // Para borrado lógico (true = activo)
+    // Para borrado lógico
     private boolean activo = true;
 }

@@ -15,10 +15,9 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class IntegranteForm {
-    private Long id; // nulo cuando es alta
+    private Long id;
 
     @NotNull(message = "DNI obligatorio")
-    @Positive(message = "DNI debe ser positivo")
     private Integer dni;
 
     @NotBlank

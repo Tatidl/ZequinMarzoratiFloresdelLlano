@@ -52,6 +52,7 @@ public class PreparacionServiceImpl  implements PreparacionService {
                 productoRepo.save(prod);
             }
         });
+
         preparacionRepo.save(preparacion);
         form.setId(preparacion.getId());
         return form;
@@ -59,9 +60,16 @@ public class PreparacionServiceImpl  implements PreparacionService {
 
     @Override
     public PreparacionForm editarFecha(Long id, PreparacionForm form) {
-        System.out.println("Editando preparación ID: " + id + ", Fecha recibida: " + form.getFecha()); // Log para depuración
         var preparacion = preparacionRepo.findById(id).orElseThrow(() -> new Excepcion("Preparación no encontrada"));
         if (!preparacion.isActiva()) throw new Excepcion("Preparación eliminada");
+
+        // Validar que no se intente modificar receta ni raciones
+        if (!form.getIdReceta().equals(preparacion.getReceta().getId())) {
+            throw new Excepcion("No se puede cambiar la receta de una preparación existente.");
+        }
+        if (!form.getRaciones().equals(preparacion.getTotalRacionesPreparadas())) {
+            throw new Excepcion("No se puede cambiar la cantidad de raciones de una preparación existente.");
+        }
 
         // Validar fecha nueva
         var fechaNueva = form.getFecha();
@@ -73,16 +81,17 @@ public class PreparacionServiceImpl  implements PreparacionService {
         }
 
         preparacion.setFechaCoccion(fechaNueva);
-        System.out.println("Fecha asignada a preparación: " + fechaNueva); // Log para depuración
         preparacionRepo.save(preparacion);
-        System.out.println("Preparación guardada con ID: " + preparacion.getId()); // Log para depuración
         return form;
     }
 
     @Override
     public void baja(Long id) {
         var preparacion = preparacionRepo.findById(id).orElseThrow(() -> new Excepcion("Preparación no encontrada"));
-        if (!preparacion.isActiva()) return;
+        if (!preparacion.isActiva()) {
+            return;
+        }
+
         var receta = preparacion.getReceta();
         receta.getItems().forEach(item -> {
             var ing = item.getIngrediente();
@@ -98,12 +107,13 @@ public class PreparacionServiceImpl  implements PreparacionService {
     @Override
     @Transactional(readOnly = true)
     public Page<PreparacionResumenDTO> listar(String nombreReceta, LocalDate fecha, Pageable pageable) {
-        return preparacionRepo.findAll(pageable).map(p -> new PreparacionResumenDTO(
-                p.getId(),
-                p.getFechaCoccion(),
-                p.getReceta().getNombre(),
-                p.getTotalRacionesPreparadas(),
-                p.getReceta().getCaloriasTotales()
+        return preparacionRepo.findByActivaTrueAndFechaAndRecetaNombreContaining(fecha, nombreReceta, pageable)
+                .map(p -> new PreparacionResumenDTO(
+                        p.getId(),
+                        p.getFechaCoccion(),
+                        p.getReceta().getNombre(),
+                        p.getTotalRacionesPreparadas(),
+                        p.getReceta().getCaloriasTotales()
         ));
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 public class FamiliaForm {
     private Long id;     // nulo cuando es alta
 
-    private Integer nroFamilia; // se completa en el servicio (autonumérico)
+    private Integer nroFamilia;
 
     @NotBlank(message = "El nombre de la familia es obligatorio")
     private String nombre;

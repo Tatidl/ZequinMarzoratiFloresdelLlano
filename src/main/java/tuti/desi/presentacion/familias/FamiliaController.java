@@ -54,7 +54,7 @@ public class FamiliaController {
         return "familias/familiaEditar";
     }
 
-    // ---------- GUARDAR (alta o edición) ------------------------------------
+    // ---------- GUARDAR (alta o ediión) ------------------------------------
     @PostMapping
     public String guardar(@Valid @ModelAttribute("form") FamiliaForm form,
                           BindingResult br,
@@ -75,7 +75,7 @@ public class FamiliaController {
             }
             return "redirect:/familias";
         } catch (Excepcion e) {
-            // Agregar el mensaje de error al modelo para mostrarlo en la vista
+            // Agrego el mensaje de error al modelo para mostrarlo en la vista
             model.addAttribute("error", e.getMessage());
             return "familias/familiaEditar";
         }

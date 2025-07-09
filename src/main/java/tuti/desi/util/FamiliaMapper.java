@@ -12,38 +12,38 @@ import java.util.stream.Collectors;
 public class FamiliaMapper {
 
     // -------- entidad ← form (alta) ---------------
-    public static Familia aEntidad(FamiliaForm form) {
+    public static Familia aEntidadFamilia(FamiliaForm form) {
         Familia familia = new Familia();
         familia.setId(form.getId());
         familia.setNombre(form.getNombre());
         familia.setNroFamilia(form.getNroFamilia());
 
-        form.getIntegrantes().forEach(i -> familia.getIntegrantes().add(toEntidad(i, familia)));
+        form.getIntegrantes().forEach(i -> familia.getIntegrantes().add(aEntidadAsistido(i, familia)));
         return familia;
     }
 
     // -------- entidad existente ← form (edición) ---
-    public static void fusionar(Familia familia, FamiliaForm form) {
-        // índice rápido de integrantes actuales (managed)
+    public static void actualizar(Familia familia, FamiliaForm form) {
+        // índice de integrantes actuales
         Map<Long, Asistido> porId = familia.getIntegrantes().stream()
                 .filter(a -> a.getId() != null)
                 .collect(Collectors.toMap(Asistido::getId, a -> a));
 
         // eliminamos los que ya no vienen en el formulario
         familia.getIntegrantes().removeIf(a ->
-                form.getIntegrantes().stream().noneMatch(i -> a.getId()!=null && a.getId().equals(i.getId())));
+                form.getIntegrantes().stream().noneMatch(i -> a.getId() != null && a.getId().equals(i.getId())));
 
         // recorremos datos del form
         for (IntegranteForm iForm : form.getIntegrantes()) {
             Asistido asistido;
             if (iForm.getId() != null && porId.containsKey(iForm.getId())) {
-                // existe → actualizamos campos en la misma instancia
+                // si existe entonces actualizamos campos en la misma instancia
                 asistido = porId.get(iForm.getId());
             } else {
-                // nuevo integrante
+                // si no, es un nuevo integrante
                 asistido = new Asistido();
-                asistido.setFamilia(familia);           // relación inversa
-                familia.getIntegrantes().add(asistido); // queda managed
+                asistido.setFamilia(familia);
+                familia.getIntegrantes().add(asistido);
             }
             // campos comunes
             asistido.setDni(iForm.getDni());
@@ -67,15 +67,15 @@ public class FamiliaMapper {
 
         List<IntegranteForm> ints = entidad.getIntegrantes().stream()
                 .filter(Asistido::isActivo)
-                .map(FamiliaMapper::toForm)
+                .map(FamiliaMapper::aIntegranteForm)
                 .collect(Collectors.toList());
 
         f.setIntegrantes(ints);
         return f;
     }
 
-    // -------- helpers ------------------------------
-    private static Asistido toEntidad(IntegranteForm i, Familia familia) {
+    // -------- métodos auxiliares ------------------------------
+    private static Asistido aEntidadAsistido(IntegranteForm i, Familia familia) {
         Asistido a = new Asistido();
         a.setId(i.getId());
         a.setDni(i.getDni());
@@ -87,7 +87,7 @@ public class FamiliaMapper {
         return a;
     }
 
-    private static IntegranteForm toForm(Asistido a) {
+    private static IntegranteForm aIntegranteForm(Asistido a) {
         IntegranteForm f = new IntegranteForm();
         f.setId(a.getId());
         f.setDni(a.getDni());

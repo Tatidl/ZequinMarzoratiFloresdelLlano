@@ -29,7 +29,7 @@ public class RecetaMapper {
         return receta;
     }
 
-    public static void fusionar(Receta recetaObjetivo, RecetaForm form, Function<Long, Ingrediente> buscardorIngredientes) {
+    public static void actualizar(Receta recetaObjetivo, RecetaForm form, Function<Long, Ingrediente> buscardorIngredientes) {
         recetaObjetivo.setDescripcion(form.getDescripcion());
         recetaObjetivo.getItems().clear();
         form.getIngredientes().forEach(ingrediente -> {

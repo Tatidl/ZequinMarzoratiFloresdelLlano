@@ -23,6 +23,8 @@ public class PreparacionesBuscarController {
                           Model model) {
         var pagina = preparacionService.listar(form.getNombreReceta(), form.getFecha(), PageRequest.of(page, 10));
         model.addAttribute("preparaciones", pagina);
+        model.addAttribute("nombreReceta", form.getNombreReceta() != null ? form.getNombreReceta() : "");
+        model.addAttribute("fecha", form.getFecha() != null ? form.getFecha() : "");
         return "preparaciones/preparacionesBuscar";
     }
 }

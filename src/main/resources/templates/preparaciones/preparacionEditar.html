@@ -59,7 +59,7 @@
     <div th:if="${#fields.hasGlobalErrors()}"
          class="alert alert-danger mt-3"
          th:each="err : ${#fields.globalErrors()}"
-         th:text="${err}"></div>
+         th:text="${err.code == 'stockInsuficiente' ? 'Stock insuficiente para los ingredientes.' : err.defaultMessage}"></div>
 </form>
 
 <script>

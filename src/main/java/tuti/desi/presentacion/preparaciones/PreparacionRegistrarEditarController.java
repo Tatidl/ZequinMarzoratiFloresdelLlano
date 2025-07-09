@@ -22,7 +22,7 @@ public class PreparacionRegistrarEditarController {
     /* ---------- datos comunes a NUEVA y EDITAR ---------- */
     @ModelAttribute("recetas")
     public Iterable<?> recetas() {
-        return recetaRepo.findByActivaTrueOrderByNombre();   // trae solo las activas
+        return recetaRepo.findByActivaTrueOrderByNombre();   // esto trae solo las activas
     }
 
     /* ---------- ALTA ---------- */
@@ -40,14 +40,12 @@ public class PreparacionRegistrarEditarController {
         return "preparaciones/preparacionEditar";
     }
 
-    /* ---------- GUARDAR (alta o edición) ---------- */
+    /* ---------- GUARDAR ---------- */
     @PostMapping
     public String guardar(@Valid @ModelAttribute("preparacionForm") PreparacionForm form,
                           BindingResult br,
                           RedirectAttributes ra) {
-        System.out.println("Fecha enviada desde el formulario: " + form.getFecha());
         if (br.hasErrors()) {
-            System.out.println("Errores de validación: " + br.getAllErrors());
             return "preparaciones/preparacionEditar";
         }
 
@@ -59,11 +57,9 @@ public class PreparacionRegistrarEditarController {
             }
             ra.addFlashAttribute("msg", "Preparación guardada correctamente");
         } catch (Excepcion e) {
-            System.out.println("Excepción en guardar: " + e.getMessage());
             ra.addFlashAttribute("error", e.getMessage());
             return "preparaciones/preparacionEditar";
         }
-
         return "redirect:/preparaciones";
     }
 

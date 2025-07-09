@@ -8,12 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import tuti.desi.accesoDatos.IEntregaAsistenciaRepo;
 import tuti.desi.accesoDatos.IFamiliaRepo;
 import tuti.desi.entidades.Asistido;
+import tuti.desi.entidades.EntregaAsistencia;
 import tuti.desi.entidades.Familia;
 import tuti.desi.excepciones.Excepcion;
-import tuti.desi.presentacion.familias.FamiliaForm;
-import tuti.desi.presentacion.familias.FamiliaResumenDTO;
-import tuti.desi.presentacion.familias.FamiliasBuscarForm;
-import tuti.desi.presentacion.familias.IntegranteDTO;
+import tuti.desi.presentacion.familias.*;
 import tuti.desi.util.FamiliaMapper;
 
 import java.util.Map;
@@ -30,7 +28,7 @@ public class FamiliaServiceImpl implements FamiliaService {
     // Auxiliares
     private void validarDNIUnico(FamiliaForm form) {
         var repetidos = form.getIntegrantes().stream()
-                .collect(Collectors.groupingBy(i -> i.getDni(), Collectors.counting()))
+                .collect(Collectors.groupingBy(IntegranteForm::getDni, Collectors.counting()))
                 .entrySet().stream().filter(e -> e.getValue() > 1)
                 .map(Map.Entry::getKey).toList();
         if (!repetidos.isEmpty()) {
@@ -58,7 +56,7 @@ public class FamiliaServiceImpl implements FamiliaService {
             throw new Excepcion("Ya existe la familia " + form.getNroFamilia());
         }
 
-        Familia entidad = FamiliaMapper.aEntidad(form);
+        Familia entidad = FamiliaMapper.aEntidadFamilia(form);
         repo.save(entidad);
         form.setId(entidad.getId());
         return form;
@@ -72,7 +70,7 @@ public class FamiliaServiceImpl implements FamiliaService {
                 .orElseThrow(() -> new Excepcion("Familia no encontrada"));
 
         form.setNroFamilia(familia.getNroFamilia());
-        FamiliaMapper.fusionar(familia, form);
+        FamiliaMapper.actualizar(familia, form);
         return form;
     }
 
@@ -102,7 +100,7 @@ public class FamiliaServiceImpl implements FamiliaService {
                     .toList();
 
             var ultimaAsistencia = entregaRepo.findTopByFamiliaIdAndActivaTrueOrderByFechaDesc(f.getId())
-                    .map(e -> e.getFecha())
+                    .map(EntregaAsistencia::getFecha)
                     .orElse(null);
 
             var integrantesDto = integrantesActivos.stream()

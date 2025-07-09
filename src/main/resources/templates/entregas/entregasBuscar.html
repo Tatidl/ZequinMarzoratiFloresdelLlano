@@ -12,15 +12,15 @@
 <form th:action="@{/entregas}" method="get" class="row g-3 mb-4 align-items-end">
     <div class="col-md-3">
         <label for="fecha" class="form-label">Fecha</label>
-        <input type="date" id="fecha" name="fecha" th:value="${form.fecha}" class="form-control">
+        <input type="date" id="fecha" name="fecha" th:value="${fecha}" class="form-control">
     </div>
     <div class="col-md-2">
         <label for="nroFamilia" class="form-label">Nº familia</label>
-        <input type="number" id="nroFamilia" name="nroFamilia" th:value="${form.nroFamilia}" class="form-control">
+        <input type="number" id="nroFamilia" name="nroFamilia" th:value="${nroFamilia}" class="form-control">
     </div>
     <div class="col-md-3">
         <label for="nombre" class="form-label">Nombre familia</label>
-        <input type="text" id="nombre" name="nombre" th:value="${form.nombre}" class="form-control">
+        <input type="text" id="nombre" name="nombre" th:value="${nombre}" class="form-control">
     </div>
     <div class="col-auto">
         <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
@@ -42,11 +42,11 @@
     </thead>
     <tbody>
     <tr th:each="e : ${entregas.content}">
-        <td th:text="${#temporals.format(e.fecha,'dd/MM/yyyy')}">07/07/25</td>
-        <td th:text="${e.nroFamilia}">15</td>
-        <td th:text="${e.nombre}">Sosa</td>
-        <td th:text="${e.plato}">Arroz con pollo</td>
-        <td class="text-end" th:text="${e.cantidadRaciones}">3</td>
+        <td th:text="${#temporals.format(e.fecha,'dd/MM/yyyy')}"></td>
+        <td th:text="${e.nroFamilia}"></td>
+        <td th:text="${e.nombre}"></td>
+        <td th:text="${e.plato}"></td>
+        <td class="text-end" th:text="${e.cantidadRaciones}"></td>
         <td class="text-center">
             <form th:action="@{'/entregas/' + ${e.id} + '/baja'}"
                   method="post" class="d-inline"
@@ -66,16 +66,21 @@
     <span>Página <span th:text="${entregas.number+1}"></span>/<span th:text="${entregas.totalPages}"></span></span>
     <div>
         <a th:if="${entregas.hasPrevious()}"
-           th:href="@{/entregas(page=${entregas.number-1}, fecha=${form.fecha}, nroFamilia=${form.nroFamilia}, nombre=${form.nombre})}"
+           th:href="@{/entregas(page=${entregas.number-1}, fecha=${fecha}, nroFamilia=${nroFamilia}, nombre=${nombre})}"
            class="btn btn-outline-secondary btn-sm">Anterior</a>
         <a th:if="${entregas.hasNext()}"
-           th:href="@{/entregas(page=${entregas.number+1}, fecha=${form.fecha}, nroFamilia=${form.nroFamilia}, nombre=${form.nombre})}"
+           th:href="@{/entregas(page=${entregas.number+1}, fecha=${fecha}, nroFamilia=${nroFamilia}, nombre=${nombre})}"
            class="btn btn-outline-secondary btn-sm">Siguiente</a>
     </div>
 </div>
 
 <div class="mt-4">
     <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
+</div>
+
+<div th:if="${message}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <span th:text="${message}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 </body>
 </html>

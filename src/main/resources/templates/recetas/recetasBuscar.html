@@ -13,17 +13,17 @@
 <form class="form-filtros mb-3 row row-cols-lg-auto g-3 align-items-end" method="get" th:action="@{/recetas}">
     <div class="col">
         <label class="form-label">Nombre
-            <input type="text" class="form-control" name="nombre" th:value="${param.nombre}">
+            <input type="text" class="form-control" name="nombre" th:value="${nombre}">
         </label>
     </div>
     <div class="col">
         <label class="form-label">Calorías mín.
-            <input type="number" class="form-control" name="calMin" th:value="${param.calMin}">
+            <input type="number" class="form-control" name="minCal" th:value="${minCal}" min="0">
         </label>
     </div>
     <div class="col">
         <label class="form-label">Calorías máx.
-            <input type="number" class="form-control" name="calMax" th:value="${param.calMax}">
+            <input type="number" class="form-control" name="maxCal" th:value="${maxCal}" min="0">
         </label>
     </div>
     <div class="col">
@@ -51,7 +51,7 @@
             <td th:text="${r.caloriasTotales}">450</td>
             <td>
                 <a class="btn btn-outline-primary btn-sm" th:href="@{'/recetas/' + ${r.id} + '/editar'}">Editar</a>
-                <form th:action="@{'/recetas/' + ${r.id} + '/baja'}" method="post" th:object="${r}" style="display:inline">
+                <form th:action="@{'/recetas/' + ${r.id} + '/baja'}" method="post" style="display:inline">
                     <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Dar de baja la receta?')">
                         Eliminar
                     </button>
@@ -66,13 +66,13 @@
 <nav th:if="${pagina.totalPages > 1}" class="mt-3">
     <ul class="pagination">
         <li class="page-item" th:classappend="${!pagina.hasPrevious()} ? 'disabled'">
-            <a class="page-link" th:href="@{/recetas(page=${pagina.number-1}, nombre=${param.nombre}, calMin=${param.calMin}, calMax=${param.calMax})}">Anterior</a>
+            <a class="page-link" th:href="@{/recetas(page=${pagina.number-1}, nombre=${nombre}, minCal=${minCal}, maxCal=${maxCal})}">Anterior</a>
         </li>
         <li class="page-item disabled">
             <span class="page-link" th:text="'Página ' + (${pagina.number}+1) + ' de ' + ${pagina.totalPages}"></span>
         </li>
         <li class="page-item" th:classappend="${!pagina.hasNext()} ? 'disabled'">
-            <a class="page-link" th:href="@{/recetas(page=${pagina.number+1}, nombre=${param.nombre}, calMin=${param.calMin}, calMax=${param.calMax})}">Siguiente</a>
+            <a class="page-link" th:href="@{/recetas(page=${pagina.number+1}, nombre=${nombre}, minCal=${minCal}, maxCal=${maxCal})}">Siguiente</a>
         </li>
     </ul>
 </nav>

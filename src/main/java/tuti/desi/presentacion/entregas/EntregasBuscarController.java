@@ -23,6 +23,9 @@ public class EntregasBuscarController {
                           Model model) {
         var pagina = entregaAsistenciaService.listar(form, PageRequest.of(page, 10));
         model.addAttribute("entregas", pagina);
+        model.addAttribute("fecha", form.getFecha() != null ? form.getFecha() : "");
+        model.addAttribute("nroFamilia", form.getNroFamilia() != null ? form.getNroFamilia() : "");
+        model.addAttribute("nombre", form.getNombre() != null ? form.getNombre() : "");
         return "entregas/entregasBuscar";
     }
 }

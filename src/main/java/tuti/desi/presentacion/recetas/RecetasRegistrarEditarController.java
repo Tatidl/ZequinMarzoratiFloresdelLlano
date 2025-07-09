@@ -11,8 +11,6 @@ import tuti.desi.accesoDatos.IIngredienteRepo;
 import tuti.desi.accesoDatos.IRecetaRepo;
 import tuti.desi.entidades.ItemReceta;
 import tuti.desi.excepciones.Excepcion;
-import tuti.desi.presentacion.recetas.ItemRecetaForm;
-import tuti.desi.presentacion.recetas.RecetaForm;
 import tuti.desi.servicios.RecetaService;
 
 @Controller
@@ -44,7 +42,7 @@ public class RecetasRegistrarEditarController {
     /* =======================  EDITAR  =========================== */
     @GetMapping("/{id}/editar")
     public String editar(@PathVariable Long id, Model model){
-
+        cargarListaIngredientes(model);
         /* 1) Traemos la receta con todos sus items directamente del repo */
         var receta = recetaRepo.findById(id)
                 .orElseThrow(() -> new Excepcion("Receta no encontrada"));
@@ -66,7 +64,6 @@ public class RecetasRegistrarEditarController {
 
         /* 3) Al modelo */
         model.addAttribute("recetaForm", form);
-        cargarListaIngredientes(model);
 
         return "recetas/recetaEditar";
     }
@@ -83,8 +80,11 @@ public class RecetasRegistrarEditarController {
             return "recetas/recetaEditar";
         }
 
-        if(form.getId()==null) recetaService.alta(form);
-        else                   recetaService.editar(form.getId(), form);
+        if (form.getId()==null) {
+            recetaService.alta(form);
+        } else {
+            recetaService.editar(form.getId(), form);
+        }
 
         ra.addFlashAttribute("msg","Receta guardada correctamente");
         return "redirect:/recetas";
