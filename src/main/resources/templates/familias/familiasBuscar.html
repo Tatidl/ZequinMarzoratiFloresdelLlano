@@ -41,7 +41,7 @@
             <td th:text="${f.integrantesActivos}"></td>
             <td class="text-center">
                 <a class="btn btn-outline-primary btn-sm" th:href="@{'/familias/' + ${f.id} + '/editar'}">Editar</a>
-                <form th:action="@{'/familias/' + ${f.id}}" method="post" style="display:inline">
+                <form th:action="@{'/familias/' + ${f.id} + '/baja'}" method="post" style="display:inline">
                     <input type="hidden" name="_method" value="delete"/>
                     <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Eliminar familia?')">🗑</button>
                 </form>

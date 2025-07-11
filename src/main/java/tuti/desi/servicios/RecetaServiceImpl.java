@@ -1,6 +1,8 @@
 package tuti.desi.servicios;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import tuti.desi.util.RecetaMapper;
 @RequiredArgsConstructor
 public class RecetaServiceImpl implements RecetaService {
 
+    private static final Logger logger = LoggerFactory.getLogger(RecetaServiceImpl.class);
     private final IRecetaRepo recetaRepo;
     private final IIngredienteRepo ingredienteRepo;
 
@@ -28,11 +31,15 @@ public class RecetaServiceImpl implements RecetaService {
     //----------------------------------
     @Override
     public RecetaForm alta(RecetaForm form) {
+        logger.info("Attempting to save receta: nombre={}, ingredientes={}",
+                form.getNombre(), form.getIngredientes().size());
         if (recetaRepo.existsByNombreIgnoreCaseAndActivaTrue(form.getNombre())) {
+            logger.warn("Duplicate recipe name: {}", form.getNombre());
             throw new Excepcion("Ya existe una receta con ese nombre");
         }
         var entidad = RecetaMapper.aEntidad(form, this::getIngrediente);
         recetaRepo.save(entidad);
+        logger.info("Receta saved with ID: {}", entidad.getId());
         form.setId(entidad.getId());
         return form;
     }

@@ -2,6 +2,8 @@ package tuti.desi.presentacion.recetas;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,7 @@ import tuti.desi.servicios.RecetaService;
 @RequiredArgsConstructor
 public class RecetasRegistrarEditarController {
 
+    private static final Logger logger = LoggerFactory.getLogger(RecetasRegistrarEditarController.class);
     private final RecetaService   recetaService;      // la lógica ya existente
     private final IRecetaRepo     recetaRepo;         // para traer la receta completa
     private final IIngredienteRepo ingredienteRepo;   // para la lista del combo
@@ -73,21 +76,30 @@ public class RecetasRegistrarEditarController {
     public String guardar(@Valid @ModelAttribute("recetaForm") RecetaForm form,
                           BindingResult br,
                           RedirectAttributes ra,
-                          Model model){
-
-        if(br.hasErrors()){
-            cargarListaIngredientes(model);   // necesitamos el combo si hay error
+                          Model model) {
+        logger.info("Received RecetaForm: id={}, nombre={}, ingredientes={}",
+                form.getId(), form.getNombre(), form.getIngredientes().size());
+        if (br.hasErrors()) {
+            logger.info("Validation errors: {}", br.getAllErrors());
+            cargarListaIngredientes(model);
             return "recetas/recetaEditar";
         }
-
-        if (form.getId()==null) {
-            recetaService.alta(form);
-        } else {
-            recetaService.editar(form.getId(), form);
+        try {
+            if (form.getId() == null) {
+                logger.info("Attempting to create new receta: {}", form.getNombre());
+                recetaService.alta(form);
+            } else {
+                logger.info("Attempting to update receta: id={}, nombre={}", form.getId(), form.getNombre());
+                recetaService.editar(form.getId(), form);
+            }
+            ra.addFlashAttribute("msg", "Receta guardada correctamente");
+            return "redirect:/recetas";
+        } catch (Excepcion e) {
+            logger.error("Error saving receta: {}", e.getMessage(), e);
+            model.addAttribute("error", e.getMessage());
+            cargarListaIngredientes(model);
+            return "recetas/recetaEditar";
         }
-
-        ra.addFlashAttribute("msg","Receta guardada correctamente");
-        return "redirect:/recetas";
     }
 
     /* =======================  BAJA ============================== */
