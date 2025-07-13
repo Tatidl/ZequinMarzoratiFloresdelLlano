@@ -140,6 +140,4 @@ public class PreparacionServiceImpl  implements PreparacionService {
             throw new Excepcion("Ya existe una preparación de esa receta para la fecha indicada");
         }
     }
-
-
 }

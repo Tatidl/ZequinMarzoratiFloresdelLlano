@@ -55,12 +55,12 @@ public class RecetasRegistrarEditarController {
 
         for(ItemReceta ir : receta.getItems()){        // relación “items”
             if (ir.isActivo()) {
-                var f = new ItemRecetaForm();
-                f.setId(ir.getId());
-                f.setIdIngrediente( ir.getIngrediente().getId() );
-                f.setCantidadKg(ir.getCantidadKg().doubleValue());
-                f.setCalorias(ir.getCalorias());
-                form.getIngredientes().add(f);
+                var itemRecetaForm = new ItemRecetaForm();
+                itemRecetaForm.setId(ir.getId());
+                itemRecetaForm.setIdIngrediente( ir.getIngrediente().getId() );
+                itemRecetaForm.setCantidadKg(ir.getCantidadKg().doubleValue());
+                itemRecetaForm.setCalorias(ir.getCalorias());
+                form.getIngredientes().add(itemRecetaForm);
             }
         }
 

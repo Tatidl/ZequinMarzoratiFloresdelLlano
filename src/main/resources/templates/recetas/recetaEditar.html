@@ -64,6 +64,8 @@
         <div class="text-danger" th:errors="*{ingredientes}"></div>
     </fieldset>
 
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+
     <div class="mt-4">
         <button type="submit" class="btn btn-success btn-sm">Guardar</button>
         <a th:href="@{/recetas}" class="btn btn-outline-secondary btn-sm">Cancelar</a>
