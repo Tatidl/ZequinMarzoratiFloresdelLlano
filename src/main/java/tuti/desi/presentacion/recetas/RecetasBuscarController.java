@@ -32,6 +32,4 @@ public class RecetasBuscarController {
         model.addAttribute("maxCal", form.getMaxCal() != null ? form.getMaxCal() : "");
         return "recetas/recetasBuscar";
     }
-
-
 }

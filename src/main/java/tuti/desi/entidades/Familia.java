@@ -32,6 +32,6 @@ public class Familia {
     private boolean activa = true; // borrado lógico
 
     // 1..* integrantes activos
-    @OneToMany(mappedBy = "familia", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "familia", cascade = CascadeType.ALL)
     private List<Asistido> integrantes = new ArrayList<>();
 }

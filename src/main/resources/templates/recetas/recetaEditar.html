@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8"/>
     <title th:text="${recetaForm.id == null ? 'Nueva' : 'Editar'} + ' receta'">Receta</title>
@@ -14,7 +14,7 @@
 
     <div class="mb-3">
         <label class="form-label">Nombre:</label>
-        <input type="text" th:field="*{nombre}" class="form-control" required/>
+        <input type="text" th:field="*{nombre}" class="form-control" required th:readonly="${recetaForm.id != null}"/>
         <div class="text-danger" th:errors="*{nombre}"></div>
     </div>
 

@@ -30,8 +30,12 @@ public class FamiliaMapper {
                 .collect(Collectors.toMap(Asistido::getId, a -> a));
 
         // eliminamos los que ya no vienen en el formulario
-        familia.getIntegrantes().removeIf(a ->
-                form.getIntegrantes().stream().noneMatch(i -> a.getId() != null && a.getId().equals(i.getId())));
+        familia.getIntegrantes().forEach(asistido -> {
+            if (asistido.getId() != null &&
+                    form.getIntegrantes().stream().noneMatch(i -> asistido.getId().equals(i.getId()))) {
+                asistido.setActivo(false);
+            }
+        });
 
         // recorremos datos del form
         for (IntegranteForm iForm : form.getIntegrantes()) {

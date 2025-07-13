@@ -16,7 +16,7 @@ public class Asistido extends Persona {
 
     private LocalDate fechaRegistro = LocalDate.now();
 
-    // Relación 1..* -> 1
+    // Relación 1.* -> 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "familia_id", nullable = false)
     private Familia familia;

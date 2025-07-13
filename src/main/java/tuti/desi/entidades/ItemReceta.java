@@ -32,4 +32,7 @@ public class ItemReceta {
 
     @Positive(message = "Las calorías deben ser un número positivo")
     private Integer calorias;
+
+    @Column(nullable = false)
+    private boolean activo = true; // para borrado lógico
 }

@@ -1,6 +1,5 @@
 package tuti.desi.presentacion.familias;
 
-import jakarta.servlet.ServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -59,7 +58,6 @@ public class FamiliaController {
     public String guardar(@Valid @ModelAttribute("form") FamiliaForm form,
                           BindingResult br,
                           RedirectAttributes ra,
-                          ServletRequest request,
                           Model model) {
         if (br.hasErrors()) {
             return "familias/familiaEditar";

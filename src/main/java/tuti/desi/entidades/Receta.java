@@ -25,7 +25,7 @@ public class Receta {
     @Lob
     private String descripcion;
 
-    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL)
     private List<ItemReceta> items = new ArrayList<>();
 
     // Suma de las calorias totales de todos los ingredientes
