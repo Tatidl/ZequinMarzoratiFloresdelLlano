@@ -17,7 +17,7 @@ import java.util.List;
 public class Familia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /** Número correlativo de familia */

@@ -24,6 +24,7 @@ public class FamiliaServiceImpl implements FamiliaService {
 
     private final IFamiliaRepo repo;
     private final IEntregaAsistenciaRepo entregaRepo;
+    
 
     // Auxiliares
     private void validarDNIUnico(FamiliaForm form) {
@@ -132,4 +133,18 @@ public class FamiliaServiceImpl implements FamiliaService {
                 .orElseThrow(() -> new Excepcion("Familia no encontrada"));
         return FamiliaMapper.aForm(familia);
     }
+    
+    //-------------borrar integrante----------------------------------------
+   	@Override
+   	public void eliminarIntegrante(Integer nroFamilia, Long id) {
+   		
+   	Familia familia = repo.findByNroFamiliaAndActivaTrue(nroFamilia);
+   	
+   		if (familia != null) {
+   	        familia.getIntegrantes().removeIf(integrante -> 
+   	            integrante.getId() != null && integrante.getId().equals(id));
+   	        repo.save(familia);
+   	    }
+   }
+
 }

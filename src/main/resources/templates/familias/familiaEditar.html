@@ -35,31 +35,39 @@
           <th>Fecha Nac.</th><th>Ocupación</th><th></th>
         </tr>
         </thead>
-        <tbody id="integrantes-body">
-        <tr th:each="i,stat : *{integrantes}" th:id="'row-'+${stat.index}">
-          <input type="hidden" th:field="*{integrantes[__${stat.index}__].id}"/>
-          <td><input type="number" class="form-control" th:field="*{integrantes[__${stat.index}__].dni}" min="1"/></td>
-          <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].apellido}"/></td>
-          <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].nombre}"/></td>
-          <td><input type="text"   class="form-control"
-                     th:field="*{integrantes[__${stat.index}__].fechaNacimiento}"
-                     pattern="\d{2}/\d{2}/\d{4}"
-                     placeholder="dd/mm/aaaa"/></td>
-          <td>
-            <select class="form-select" th:field="*{integrantes[__${stat.index}__].ocupacion}">
-              <option value="">--Seleccione--</option>
-              <option value="EMPLEADO">Empleado</option>
-              <option value="ESTUDIANTE">Estudiante</option>
-              <option value="DESEMPLEADO">Desempleado</option>
-              <option value="AMA_CASA">Ama de casa</option>
-              <option value="OTRO">Otro</option>
-            </select>
-          </td>
-          <td class="text-center">
-            <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="removeIntegrante(this)">🗑</button>
-          </td>
-        </tr>
-        </tbody>
+
+		<tbody id="integrantes-body">
+		  <tr th:each="i,stat : *{integrantes}" th:id="'row-'+${stat.index}">
+		    <input type="hidden" th:field="*{integrantes[__${stat.index}__].id}"/>
+		    <td><input type="number" class="form-control" th:field="*{integrantes[__${stat.index}__].dni}" min="1"/></td>
+		    <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].apellido}"/></td>
+		    <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].nombre}"/></td>
+		    <td><input type="text"   class="form-control"
+		               th:field="*{integrantes[__${stat.index}__].fechaNacimiento}"
+		               pattern="\d{2}/\d{2}/\d{4}"
+		               placeholder="dd/mm/aaaa"/></td>
+		    <td>
+		      <select class="form-select" th:field="*{integrantes[__${stat.index}__].ocupacion}">
+		        <option value="">--Seleccione--</option>
+		        <option value="EMPLEADO">Empleado</option>
+		        <option value="ESTUDIANTE">Estudiante</option>
+		        <option value="DESEMPLEADO">Desempleado</option>
+		        <option value="AMA_CASA">Ama de casa</option>
+		        <option value="OTRO">Otro</option>
+		      </select>
+		    </td>
+		    <td class="text-center">
+		      <div th:if="${i.id != null}"> <form th:action="@{/familias/integrante/__${form.nroFamilia}__/eliminar/__${i.id}__}" method="post"
+		              onsubmit="return confirm('¿Eliminar integrante?')">
+		          <button type="submit" class="btn btn-outline-danger btn-sm btn-del">🗑️</button>
+		        </form>
+		      </div>
+		      <div th:if="${i.id == null}"> <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="removeIntegrante(this)">🗑️</button>
+		      </div>
+		    </td>
+		  </tr>
+		</tbody>
+		
       </table>
     </div>
     <button type="button" class="btn btn-primary btn-sm" onclick="addIntegrante()">Agregar integrante</button>
@@ -72,6 +80,7 @@
     <a th:href="@{/familias}" class="btn btn-outline-secondary btn-sm">Cancelar</a>
     <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
   </div>
+  
 </form>
 
 <table style="display:none">
@@ -97,6 +106,10 @@
   </tr>
 </table>
 
+
+
+
+
 <script>
   function addIntegrante() {
     const tbody = document.getElementById('integrantes-body');
@@ -115,6 +128,7 @@
 
   function removeIntegrante(btn) {
     btn.closest('tr').remove();
+	
   }
 </script>
 </body>

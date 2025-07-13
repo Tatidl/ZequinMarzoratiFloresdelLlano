@@ -11,4 +11,5 @@ public interface FamiliaService {
     void baja (Long id);
     Page<FamiliaResumenDTO> listar(String filtro, Pageable pageable);
     FamiliaForm obtenerParaEdicion(Long id);
+    void eliminarIntegrante(Integer nroFamilia, Long id);
 }

@@ -82,10 +82,20 @@ public class FamiliaController {
     }
 
     // ---------- BAJA LÓGICA -------------------------------------------------
-    @PostMapping("/{id}/baja")
+    @PostMapping("/{id}")
     public String baja(@PathVariable Long id, RedirectAttributes ra) {
         familiaService.baja(id);
         ra.addFlashAttribute("msg", "Familia dada de baja");
         return "redirect:/familias";
+    }
+    
+    //-----------ELIMINAR INTEGRANTE----------------------------------------
+    @PostMapping("/integrante/{nroFamilia}/eliminar/{integranteId}")
+    public String eliminarIntegrante(@PathVariable Integer nroFamilia,
+                                     @PathVariable Long integranteId,
+                                     RedirectAttributes ra) {
+        familiaService.eliminarIntegrante(nroFamilia, integranteId);
+        ra.addFlashAttribute("msg", "Integrante eliminado");
+        return "redirect:/familias/" + nroFamilia + "/editar";
     }
 }

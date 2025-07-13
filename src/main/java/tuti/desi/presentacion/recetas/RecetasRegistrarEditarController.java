@@ -1,7 +1,13 @@
 package tuti.desi.presentacion.recetas;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tuti.desi.accesoDatos.IIngredienteRepo;
 import tuti.desi.accesoDatos.IRecetaRepo;
+import tuti.desi.entidades.Ingrediente;
 import tuti.desi.entidades.ItemReceta;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.servicios.RecetaService;
@@ -18,10 +25,30 @@ import tuti.desi.servicios.RecetaService;
 @RequiredArgsConstructor
 public class RecetasRegistrarEditarController {
 
+	
     private final RecetaService   recetaService;      // la lógica ya existente
     private final IRecetaRepo     recetaRepo;         // para traer la receta completa
     private final IIngredienteRepo ingredienteRepo;   // para la lista del combo
 
+    @PostConstruct
+    public void inicializarIngredientes() { // inserta los ingredientes si la tabla está vacía (para evitar duplicados)
+        if (ingredienteRepo.count() == 0) {
+            ingredienteRepo.save(new Ingrediente("Cebolla"));
+            ingredienteRepo.save(new Ingrediente("Aceite"));
+            ingredienteRepo.save(new Ingrediente("Arroz"));
+            ingredienteRepo.save(new Ingrediente("Fideos"));
+            ingredienteRepo.save(new Ingrediente("Sal"));
+            ingredienteRepo.save(new Ingrediente("Zapallo"));
+            ingredienteRepo.save(new Ingrediente("Papa"));
+            ingredienteRepo.save(new Ingrediente("Acelga"));
+            ingredienteRepo.save(new Ingrediente("Pure de tomate"));
+            ingredienteRepo.save(new Ingrediente("Polenta"));
+            ingredienteRepo.save(new Ingrediente("Carne de pollo"));
+            ingredienteRepo.save(new Ingrediente("Carne de vaca"));
+        }
+    }
+
+    
     /* ------------------------------------------------------------ */
     /** Carga la lista de ingredientes (entidades) al modelo. */
     private void cargarListaIngredientes(Model model){

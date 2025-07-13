@@ -1,6 +1,7 @@
 package tuti.desi.entidades;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "ingrediente")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -19,4 +21,8 @@ public class Ingrediente {
 
     @Column(nullable = false)
     private String nombre;
+    
+    public Ingrediente(String nombre) {
+    	this.nombre = nombre;
+    }
 }
