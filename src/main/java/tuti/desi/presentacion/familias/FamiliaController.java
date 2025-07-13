@@ -89,7 +89,7 @@ public class FamiliaController {
         return "redirect:/familias";
     }
     
-    //-----------ELIMINAR INTEGRANTE----------------------------------------
+    //-----------BORRAR INTEGRANTE----------------------------------------
     @PostMapping("/integrante/{nroFamilia}/eliminar/{integranteId}")
     public String eliminarIntegrante(@PathVariable Integer nroFamilia,
                                      @PathVariable Long integranteId,
