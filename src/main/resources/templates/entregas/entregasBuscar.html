@@ -8,15 +8,30 @@
 <body class="container py-4">
 <h2 class="mb-4">Entregas registradas</h2>
 
+<!-- Mostrar mensaje de error -->
+<div th:if="${error}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <span th:text="${error}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<!-- Mostrar mensaje de éxito -->
+<div th:if="${message}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <span th:text="${message}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+
 <!-- Filtro -->
-<form th:action="@{/entregas}" method="get" class="row g-3 mb-4 align-items-end">
+<form th:action="@{/entregas}" method="get" class="row g-3 mb-4 align-items-end needs-validation" novalidate>
     <div class="col-md-3">
         <label for="fecha" class="form-label">Fecha</label>
-        <input type="date" id="fecha" name="fecha" th:value="${fecha}" class="form-control">
+        <input type="date" id="fecha" name="fecha" th:value="${fecha}" class="form-control"
+               max="${#temporals.format(#dates.createToday(), 'yyyy-MM-dd')}">
+        <div class="invalid-feedback">Seleccione una fecha válida (no futura).</div>
     </div>
     <div class="col-md-2">
         <label for="nroFamilia" class="form-label">Nº familia</label>
-        <input type="number" id="nroFamilia" name="nroFamilia" th:value="${nroFamilia}" class="form-control">
+        <input type="number" id="nroFamilia" name="nroFamilia" th:value="${nroFamilia}" min="1" class="form-control">
+        <div class="invalid-feedback">Ingrese un número positivo.</div>
     </div>
     <div class="col-md-3">
         <label for="nombre" class="form-label">Nombre familia</label>
@@ -78,9 +93,18 @@
     <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">Volver a Inicio</a>
 </div>
 
-<div th:if="${message}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-    <span th:text="${message}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
+<script>
+    (() => {
+        'use strict';
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.needs-validation').forEach(f => {
+                f.addEventListener('submit', ev => {
+                    if (!f.checkValidity()) { ev.preventDefault(); ev.stopPropagation(); }
+                    f.classList.add('was-validated');
+                }, false);
+            });
+        });
+    })();
+</script>
 </body>
 </html>

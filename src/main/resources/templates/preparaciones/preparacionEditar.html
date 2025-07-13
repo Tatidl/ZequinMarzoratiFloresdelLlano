@@ -14,13 +14,11 @@
     <div class="mb-3 row">
         <label for="fecha" class="col-sm-2 col-form-label">Fecha</label>
         <div class="col-sm-3">
-            <input id="fecha" type="text" class="form-control"
-                   th:field="*{fecha}"
-                   pattern="\d{2}/\d{2}/\d{4}"
-                   placeholder="dd/mm/aaaa"
+            <input id="fecha" type="text" class="form-control" th:field="*{fecha}"
+                   pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/aaaa" th:errorclass="is-invalid"
                    oninvalid="this.setCustomValidity('Ingrese una fecha válida en formato dd/mm/aaaa')"
                    oninput="this.setCustomValidity('')"/>
-            <div class="invalid-feedback">Ingrese una fecha válida (no futura).</div>
+            <div class="invalid-feedback" th:errors="*{fecha}">Ingrese una fecha válida (no futura).</div>
         </div>
     </div>
 
@@ -29,13 +27,13 @@
         <div class="col-sm-5">
             <input type="hidden" th:field="*{idReceta}" th:if="${preparacionForm.id!=null}"/>
             <select th:field="*{idReceta}" id="receta" class="form-select" required
-                    th:disabled="${preparacionForm.id!=null}">
+                    th:disabled="${preparacionForm.id!=null}" th:errorclass="is-invalid">
                 <option value="" disabled selected>-- Seleccione receta --</option>
                 <option th:each="r : ${recetas}"
                         th:value="${r.id}"
                         th:text="${r.nombre}"></option>
             </select>
-            <div class="invalid-feedback">Seleccione una receta.</div>
+            <div class="invalid-feedback" th:errors="*{idReceta}">Seleccione una receta.</div>
         </div>
     </div>
 
@@ -44,8 +42,8 @@
         <div class="col-sm-2">
             <input type="number" th:field="*{raciones}" min="1" step="1"
                    id="raciones" class="form-control text-end"
-                   th:disabled="${preparacionForm.id!=null}" required>
-            <div class="invalid-feedback">Ingrese un número positivo.</div>
+                   th:disabled="${preparacionForm.id!=null}" required th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:errors="*{raciones}">Ingrese un número positivo.</div>
         </div>
     </div>
 

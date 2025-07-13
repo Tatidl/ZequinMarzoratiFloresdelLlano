@@ -14,16 +14,14 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
-<form th:action="@{/entregas}" th:object="${entregaForm}"
-      class="needs-validation" novalidate method="post">
-
+<form th:action="@{/entregas}" th:object="${entregaForm}" class="needs-validation" novalidate method="post">
     <!-- N.º de familia -->
     <div class="mb-3 row">
         <label for="nroFamilia" class="col-sm-2 col-form-label">Nº familia</label>
         <div class="col-sm-3">
             <input type="number" id="nroFamilia" th:field="*{nroFamilia}" min="1"
-                   class="form-control text-end" required>
-            <div class="invalid-feedback">Indique el número de familia</div>
+                   class="form-control text-end" th:errorclass="is-invalid" required>
+            <div class="invalid-feedback" th:errors="*{nroFamilia}">Indique el número de familia</div>
         </div>
     </div>
 
@@ -31,14 +29,14 @@
     <div class="mb-3 row">
         <label for="preparacionId" class="col-sm-2 col-form-label">Plato</label>
         <div class="col-sm-4">
-            <select id="preparacionId" th:field="*{preparacionId}" class="form-select" required>
+            <select id="preparacionId" th:field="*{preparacionId}" class="form-select" th:errorclass="is-invalid" required>
                 <option value="" disabled selected>-- Seleccione --</option>
                 <option th:each="p : ${preparacionesHoy}"
                         th:value="${p.id}"
                         th:text="${p.receta.nombre} + ' (' + ${p.stockRacionesRestantes} + ' raciones)'">
                 </option>
             </select>
-            <div class="invalid-feedback">Seleccione el plato preparado</div>
+            <div class="invalid-feedback" th:errors="*{preparacionId}">Seleccione el plato preparado</div>
         </div>
     </div>
 
@@ -47,8 +45,8 @@
         <label for="cantidadRaciones" class="col-sm-2 col-form-label">Raciones</label>
         <div class="col-sm-3">
             <input type="number" id="cantidadRaciones" th:field="*{cantidadRaciones}" min="1"
-                   class="form-control text-end" required>
-            <div class="invalid-feedback">Ingrese una cantidad válida</div>
+                   class="form-control text-end" th:errorclass="is-invalid" required>
+            <div class="invalid-feedback" th:errors="*{cantidadRaciones}">Ingrese una cantidad válida</div>
         </div>
     </div>
 

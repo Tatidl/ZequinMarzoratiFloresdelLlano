@@ -67,9 +67,8 @@ public class PreparacionServiceImpl  implements PreparacionService {
         if (!form.getIdReceta().equals(preparacion.getReceta().getId())) {
             throw new Excepcion("No se puede cambiar la receta de una preparación existente.");
         }
-        if (!form.getRaciones().equals(preparacion.getTotalRacionesPreparadas())) {
-            throw new Excepcion("No se puede cambiar la cantidad de raciones de una preparación existente.");
-        }
+
+        form.setRaciones(preparacion.getTotalRacionesPreparadas());
 
         // Validar fecha nueva
         var fechaNueva = form.getFecha();

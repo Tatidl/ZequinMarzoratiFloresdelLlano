@@ -44,11 +44,12 @@ public class PreparacionRegistrarEditarController {
     @PostMapping
     public String guardar(@Valid @ModelAttribute("preparacionForm") PreparacionForm form,
                           BindingResult br,
-                          RedirectAttributes ra) {
+                          RedirectAttributes ra,
+                          Model model) {
         if (br.hasErrors()) {
+            model.addAttribute("preparacionForm", form);
             return "preparaciones/preparacionEditar";
         }
-
         try {
             if (form.getId() == null) {
                 preparacionService.alta(form);
@@ -56,11 +57,12 @@ public class PreparacionRegistrarEditarController {
                 preparacionService.editarFecha(form.getId(), form);
             }
             ra.addFlashAttribute("msg", "Preparación guardada correctamente");
+            return "redirect:/preparaciones";
         } catch (Excepcion e) {
-            ra.addFlashAttribute("error", e.getMessage());
+            model.addAttribute("preparacionForm", form);
+            model.addAttribute("error", e.getMessage());
             return "preparaciones/preparacionEditar";
         }
-        return "redirect:/preparaciones";
     }
 
     /* ---------- BAJA LÓGICA ---------- */

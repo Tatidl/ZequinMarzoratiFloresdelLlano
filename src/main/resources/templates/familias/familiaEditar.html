@@ -9,7 +9,7 @@
 <body class="container py-4">
 <h2 th:text="${form.id != null ? 'Editar familia' : 'Nueva familia'}" class="mb-4 text-primary"></h2>
 
-<form th:action="@{/familias}" th:object="${form}" method="post">
+<form th:action="@{/familias}" th:object="${form}" method="post" class="needs-validation" novalidate>
   <input type="hidden" th:if="${form.id}" th:field="*{id}"/>
 
   <!-- Datos básicos -->
@@ -21,7 +21,7 @@
   <div class="mb-4">
     <label class="form-label">Nombre familia</label>
     <input class="form-control" th:field="*{nombre}" th:errorclass="is-invalid"/>
-    <div th:errors="*{nombre}" class="invalid-feedback"></div>
+    <div class="invalid-feedback" th:errors="*{nombre}"></div>
   </div>
 
   <!-- Integrantes -->
@@ -31,22 +31,31 @@
       <table class="table table-sm align-middle mb-2">
         <thead class="table-primary text-center">
         <tr>
-          <th>DNI</th><th>Apellido</th><th>Nombre</th>
-          <th>Fecha Nac.</th><th>Ocupación</th><th></th>
+          <th>DNI</th><th>Apellido</th><th>Nombre</th><th>Fecha Nac.</th><th>Ocupación</th><th></th>
         </tr>
         </thead>
         <tbody id="integrantes-body">
         <tr th:each="i,stat : *{integrantes}" th:id="'row-'+${stat.index}">
           <input type="hidden" th:field="*{integrantes[__${stat.index}__].id}"/>
-          <td><input type="number" class="form-control" th:field="*{integrantes[__${stat.index}__].dni}" min="1"/></td>
-          <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].apellido}"/></td>
-          <td><input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].nombre}"/></td>
-          <td><input type="text"   class="form-control"
-                     th:field="*{integrantes[__${stat.index}__].fechaNacimiento}"
-                     pattern="\d{2}/\d{2}/\d{4}"
-                     placeholder="dd/mm/aaaa"/></td>
           <td>
-            <select class="form-select" th:field="*{integrantes[__${stat.index}__].ocupacion}">
+            <input type="number" class="form-control" th:field="*{integrantes[__${stat.index}__].dni}" min="1" th:errorclass="is-invalid"/>
+            <div class="invalid-feedback" th:errors="*{integrantes[__${stat.index}__].dni}"></div>
+          </td>
+          <td>
+            <input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].apellido}" th:errorclass="is-invalid"/>
+            <div class="invalid-feedback" th:errors="*{integrantes[__${stat.index}__].apellido}"></div>
+          </td>
+          <td>
+            <input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].nombre}" th:errorclass="is-invalid"/>
+            <div class="invalid-feedback" th:errors="*{integrantes[__${stat.index}__].nombre}"></div>
+          </td>
+          <td>
+            <input type="text" class="form-control" th:field="*{integrantes[__${stat.index}__].fechaNacimiento}"
+                   pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/aaaa" th:errorclass="is-invalid"/>
+            <div class="invalid-feedback" th:errors="*{integrantes[__${stat.index}__].fechaNacimiento}"></div>
+          </td>
+          <td>
+            <select class="form-select" th:field="*{integrantes[__${stat.index}__].ocupacion}" th:errorclass="is-invalid">
               <option value="">--Seleccione--</option>
               <option value="EMPLEADO">Empleado</option>
               <option value="ESTUDIANTE">Estudiante</option>
@@ -54,15 +63,16 @@
               <option value="AMA_CASA">Ama de casa</option>
               <option value="OTRO">Otro</option>
             </select>
+            <div class="invalid-feedback" th:errors="*{integrantes[__${stat.index}__].ocupacion}"></div>
           </td>
           <td class="text-center">
-            <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="removeIntegrante(this)">🗑</button>
+            <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="borrarIntegrante(this)">🗑</button>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-    <button type="button" class="btn btn-primary btn-sm" onclick="addIntegrante()">Agregar integrante</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="agregarIntegrante()">Agregar integrante</button>
   </fieldset>
 
   <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
@@ -80,7 +90,7 @@
     <td><input type="number" class="form-control" name="integrantes[0].dni" min="1"/></td>
     <td><input type="text" class="form-control" name="integrantes[0].apellido"/></td>
     <td><input type="text" class="form-control" name="integrantes[0].nombre"/></td>
-    <td><input type="date" class="form-control" name="integrantes[0].fechaNacimiento"/></td>
+    <td><input type="text" class="form-control" name="integrantes[0].fechaNacimiento" pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/aaaa"/></td>
     <td>
       <select class="form-select" name="integrantes[0].ocupacion">
         <option value="">--Seleccione--</option>
@@ -92,13 +102,25 @@
       </select>
     </td>
     <td class="text-center">
-      <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="removeIntegrante(this)">🗑</button>
+      <button type="button" class="btn btn-outline-danger btn-sm btn-del" onclick="borrarIntegrante(this)">🗑</button>
     </td>
   </tr>
 </table>
 
 <script>
-  function addIntegrante() {
+  (() => {
+    'use strict';
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.needs-validation').forEach(f => {
+        f.addEventListener('submit', ev => {
+          if (!f.checkValidity()) { ev.preventDefault(); ev.stopPropagation(); }
+          f.classList.add('was-validated');
+        }, false);
+      });
+    });
+  })();
+
+  function agregarIntegrante() {
     const tbody = document.getElementById('integrantes-body');
     const idx = tbody.rows.length;
     const tpl = document.getElementById('row-template').cloneNode(true);
@@ -113,7 +135,7 @@
     tbody.appendChild(tpl);
   }
 
-  function removeIntegrante(btn) {
+  function borrarIntegrante(btn) {
     btn.closest('tr').remove();
   }
 </script>
