@@ -42,15 +42,14 @@ public class PreparacionServiceImpl  implements PreparacionService {
 
         // Verificar stock y descontar
         receta.getItems().forEach(item -> {
-            var ing = item.getIngrediente();
-            if (ing instanceof Producto prod) {
+            var productoId = item.getIngrediente().getId(); // Ingrediente y Producto comparten el ID.
+            var producto = productoRepo.findById(productoId).orElseThrow(() -> new Excepcion("Producto no encontrado"));
                 double requerido = item.getCantidadKg().multiply(new BigDecimal(form.getRaciones())).doubleValue();
-                if (prod.getStockDisponible() < requerido) {
-                    throw new Excepcion("Stock insuficiente del ingrediente " + prod.getNombre());
+                if (producto.getStockDisponible() < requerido) {
+                    throw new Excepcion("Stock insuficiente del ingrediente " + producto.getNombre());
                 }
-                prod.setStockDisponible((float) (prod.getStockDisponible() - requerido));
-                productoRepo.save(prod);
-            }
+                producto.setStockDisponible((float) (producto.getStockDisponible() - requerido));
+                productoRepo.save(producto);
         });
 
         preparacionRepo.save(preparacion);
